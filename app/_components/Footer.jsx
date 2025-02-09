@@ -28,27 +28,27 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Resources</h3>
             <ul className="space-y-2">
-              <li className="hover:text-green-400"><a href="#">Blog</a></li>
-              <li className="hover:text-green-400"><a href="#">User guides</a></li>
-              <li className="hover:text-green-400"><a href="#">Webinars</a></li>
+              <li className="hover:text-yellow-400"><a href="#">Blog</a></li>
+              <li className="hover:text-yellow-400"><a href="#">User guides</a></li>
+              <li className="hover:text-yellow-400"><a href="#">Webinars</a></li>
             </ul>
           </div>
           <div>
             <h3 className="font-bold text-lg mb-4">Company</h3>
             <ul className="space-y-2">
-              <li className="hover:text-green-400"><a href="#">A propos</a></li>
-              <li className="hover:text-green-400"><a href="#">Contactez Nous</a></li>
+              <li className="hover:text-yellow-400"><a href="#">A propos</a></li>
+              <li className="hover:text-yellow-400"><a href="#">Contactez Nous</a></li>
             </ul>
           </div>
         </div>
 
         {/* Pied de page */}
-        <div className="mt-8 text-green-400 text-center">
-          <p>© 2025 Sénégal, Inc. - <a href="#" className="hover:text-green-300">Privacy</a> - <a href="#" className="hover:text-green-300">Terms</a> - <a href="#" className="hover:text-green-300">Sitemap</a></p>
+        <div className="mt-8 text-white text-center">
+          <p>© 2025 Sénégal, Inc. - <a href="#" className="hover:text-yellow-300">Privacy</a> - <a href="#" className="hover:text-yellow-300">Terms</a> - <a href="#" className="hover:text-yellow-300">Sitemap</a></p>
           <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="hover:text-green-300 text-xl"><i className="fab fa-twitter"></i></a>
-            <a href="#" className="hover:text-green-300 text-xl"><i className="fab fa-linkedin"></i></a>
-            <a href="#" className="hover:text-green-300 text-xl"><i className="fab fa-github"></i></a>
+            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-twitter"></i></a>
+            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-linkedin"></i></a>
+            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-github"></i></a>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ function RightButton() {
     <div>
       
       <div
-  className="group relative inline-flex items-center overflow-hidden rounded-sm bg-indigo-600 px-8 py-3 text-white focus:ring-3 focus:outline-hidden"
+  className="group relative inline-flex items-center overflow-hidden rounded-sm bg-yellow-400 px-8 py-3 text-white focus:ring-3 rounded-md focus:outline-hidden"
  
 >
   <span className="absolute -end-full transition-all group-hover:end-4">
@@ -25,7 +25,7 @@ function RightButton() {
     </svg>
   </span>
 
-  <span className="text-sm font-medium transition-all group-hover:me-4"> Download </span>
+  <span className="text-sm font-medium transition-all group-hover:me-4">Liste Electeur </span>
 </div>
     </div>
   )

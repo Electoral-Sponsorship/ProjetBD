@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Header() {
   return (
     <header className="bg-green-900 shadow-md">
@@ -10,18 +12,22 @@ export default function Header() {
 
         {/* Navigation Links */}
         <nav className="flex space-x-6">
-          <a href="/" className="text-white hover:text-green-300">Homepage</a>
-          <a href="/ListElector" className="text-white hover:text-green-300">Load Voters List</a>
-          <a href="/confirmation-screen" className="text-white hover:text-green-300">Confirmation Screen</a>
+          <a href="/" className="text-white hover:text-yellow-300">Accueil</a>
+          <a href="/ListElector" className="text-white hover:text-yellow-300">Import Liste Votants</a>
+          <a href="/confirmation-screen" className="text-white hover:text-yellow-300">Confirmation Screen</a>
         </nav>
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-4">
-          <button className="bg-white hover:bg-green-200 text-green-600 font-semibold py-2 px-4 rounded">
-            Profile
+          <Link href={'/login'}>
+          <button className="bg-white hover:bg-green-200 text-green-600 font-semibold py-2 px-4 rounded
+          ">
+            Connexion
           </button>
+          </Link>
+          
           <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-            Help
+            Aide
           </button>
         </div>
       </div>
