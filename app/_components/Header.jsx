@@ -11,7 +11,7 @@ export default function Header() {
         {/* Navigation Links */}
         <nav className="flex space-x-6">
           <a href="/" className="text-white hover:text-green-300">Homepage</a>
-          <a href="/loadvoterslist" className="text-white hover:text-green-300">Load Voters List</a>
+          <a href="/ListElector" className="text-white hover:text-green-300">Load Voters List</a>
           <a href="/confirmation-screen" className="text-white hover:text-green-300">Confirmation Screen</a>
         </nav>
 

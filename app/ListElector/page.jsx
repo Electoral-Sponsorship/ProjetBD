@@ -4,11 +4,9 @@ import { FileDown, FolderUp, Lightbulb } from "lucide-react";
 import Button from "../elements/ButtonUpload";
 
 function ListElector() {
-  // État pour stocker le fichier sélectionné
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
 
-  // Fonction pour gérer l'upload du fichier
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
 
@@ -17,7 +15,6 @@ function ListElector() {
       return;
     }
 
-    // Vérifier que le fichier est bien un CSV
     if (file.type !== "text/csv") {
       setError("Veuillez importer un fichier au format CSV.");
       setSelectedFile(null);
@@ -29,47 +26,29 @@ function ListElector() {
   };
 
   return (
-    <div className="bg-white h-screen flex items-center justify-center">
-      <div className="mx-auto max-w-5xl py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div className="relative isolate overflow-hidden bg-green-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
-          <svg
-            viewBox="0 0 1024 1024"
-            aria-hidden="true"
-            className="absolute top-1/2 left-1/2 -z-10 size-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
-          >
-            <circle r={512} cx={512} cy={512} fill="url(#759c1415-0410-454c-8f7c-9a820de03641)" fillOpacity="0.7" />
-            <defs>
-              <radialGradient id="759c1415-0410-454c-8f7c-9a820de03641">
-                <stop stopColor="#00853F" />
-                <stop offset={0.5} stopColor="#FDEF42" />
-                <stop offset={1} stopColor="#E31B23" />
-              </radialGradient>
-            </defs>
-          </svg>
-
+    <div className="bg-white flex items-center justify-center h-screen">
+      <div className="mx-auto max-w-4xl py-12 sm:py-16 px-6 sm:px-8 lg:px-12">
+        <div className="relative isolate overflow-hidden bg-green-900 px-6 pt-12 pb-8 shadow-2xl sm:rounded-2xl sm:px-8 max-h-[80vh] overflow-y-auto">
           {/* Contenu principal */}
-          <div className="flex flex-col items-center justify-center text-center max-w-md w-full lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
-            <div className="flex flex-col items-center gap-6 p-6 text-white rounded-lg border-2 border-green-800">
-              <h1 className="text-2xl font-bold mb-4">Importation du fichier électoral</h1>
+          <div className="flex flex-col items-center text-center max-w-md w-full mx-auto">
+            <div className="flex flex-col items-center gap-4 p-4 sm:p-6 text-white rounded-lg border-2 border-green-800">
+              <h1 className="text-xl font-bold mb-4">Importation du fichier électoral</h1>
 
               {/* Instructions */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex flex-col items-center gap-2">
-                  {/* Icône */}
-                  <FileDown className="text-white text-4xl" />
-                  <p>1- Veuillez importer le fichier électoral au format CSV et saisir l’empreinte CHECKSUM SHA256 pour validation.</p>
+                  <FileDown className="text-white text-3xl" />
+                  <p className="text-sm">1- Veuillez importer le fichier électoral au format CSV et saisir l’empreinte CHECKSUM SHA256.</p>
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-                  {/* Icône */}
-                  <Lightbulb className="text-white text-4xl" />
-                  <p>2- Assurez-vous que le fichier respecte l’encodage UTF-8 et le format attendu avant de l’importer.</p>
+                  <Lightbulb className="text-white text-3xl" />
+                  <p className="text-sm">2- Assurez-vous que le fichier respecte l’encodage UTF-8 et le format attendu.</p>
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-                  {/* Icône */}
-                  <FolderUp className="text-white text-4xl" />
-                  <p>3- Importer le fichier :</p>
+                  <FolderUp className="text-white text-3xl" />
+                  <p className="text-sm">3- Importer le fichier :</p>
                 </div>
               </div>
 
@@ -78,18 +57,16 @@ function ListElector() {
                 type="file" 
                 accept=".csv" 
                 onChange={handleFileUpload} 
-                className="border rounded p-2 mb-4"
+                className="border rounded p-2 mb-3"
               />
 
               {/* Affichage du fichier sélectionné */}
-              {selectedFile && (
-                <p className="text-green-200">✅ Fichier sélectionné : {selectedFile.name}</p>
-              )}
+              {selectedFile && <p className="text-green-200 text-sm">✅ {selectedFile.name}</p>}
 
               {/* Affichage des erreurs */}
-              {error && <p className="text-red-200">❌ {error}</p>}
+              {error && <p className="text-red-200 text-sm">❌ {error}</p>}
 
-              {/* Bouton pour soumettre le fichier (positionné en bas) */}
+              {/* Bouton pour soumettre le fichier */}
               <div className="mt-auto w-full">
                
               </div>
