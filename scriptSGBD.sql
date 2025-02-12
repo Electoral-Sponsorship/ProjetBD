@@ -12,7 +12,7 @@ CREATE TABLE `Electeurs` (
   `sexe` TEXT
 ) ENGINE=InnoDB;
 
-CREATE TABLE `Candidat` (
+CREATE TABLE `Candidats` (
   `idCandidat` INT PRIMARY KEY AUTO_INCREMENT,
   `numElecteur` VARCHAR(30),
   `numTel` TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE `Candidat` (
   CONSTRAINT `fk_Candidat_Electeur` FOREIGN KEY (`numElecteur`) REFERENCES `Electeurs`(`numElecteur`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `Parrain` (
+CREATE TABLE `Parrains` (
   `idParrain` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `numElecteur` VARCHAR(30),
   `numBureauVote` VARCHAR(10),
@@ -34,13 +34,13 @@ CREATE TABLE `Parrain` (
   CONSTRAINT `fk_Parrain_Electeur` FOREIGN KEY (`numElecteur`) REFERENCES `Electeurs`(`numElecteur`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `AdministrateurDGE` (
+CREATE TABLE `Administrateurs` (
   `idAdmin` INT PRIMARY KEY AUTO_INCREMENT,
   `adresseMail` TEXT,
   `motDePasse` TEXT
 ) ENGINE=InnoDB;
 
-CREATE TABLE `ControleElecteurs` (
+CREATE TABLE `Controle_Electeurs` (
   `NumTentative` INT PRIMARY KEY AUTO_INCREMENT,
   `idAdmin` INT,
   `NumElecteur` VARCHAR(30),
@@ -49,7 +49,7 @@ CREATE TABLE `ControleElecteurs` (
 ) ENGINE=InnoDB;
 
 
-CREATE TABLE `ElecteursTemporaires` (
+CREATE TABLE `Electeurs_Temporaires` (
   `numElecteur` VARCHAR(30) PRIMARY KEY,
   `numCIN` VARCHAR(30),
   `nom` TEXT,
@@ -59,19 +59,19 @@ CREATE TABLE `ElecteursTemporaires` (
   `sexe` TEXT
 ) ENGINE=InnoDB;
 
-CREATE TABLE `Parrainage` (
+CREATE TABLE `Parrainages` (
   `dateDebut` DATE,
   `dateFin` DATE,
   `etatOuverture` BOOLEAN DEFAULT FALSE,
   `idAdmin` INT,
-  CONSTRAINT `fk_Parrainage_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `AdministrateurDGE`(`idAdmin`)
+  CONSTRAINT `fk_Parrainage_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `Administrateurs`(`idAdmin`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `Historisation` (
+CREATE TABLE `Historisations` (
   `idHistorisation` INT PRIMARY KEY AUTO_INCREMENT,
   `idAdmin` INT,
   `adresseIP` TEXT,
   `dateHistorisation` DATE,
   `clef` TEXT,
-  CONSTRAINT `fk_Historisation_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `AdministrateurDGE`(`idAdmin`)
+  CONSTRAINT `fk_Historisation_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `Administrateurs`(`idAdmin`)
 ) ENGINE=InnoDB;
