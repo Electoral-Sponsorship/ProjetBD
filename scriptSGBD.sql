@@ -40,13 +40,12 @@ CREATE TABLE `AdministrateurDGE` (
   `motDePasse` TEXT
 ) ENGINE=InnoDB;
 
-CREATE TEMPORARY TABLE `ControleElecteur` (
+CREATE TABLE `ControleElecteurs` (
   `NumTentative` INT PRIMARY KEY AUTO_INCREMENT,
   `idAdmin` INT,
   `NumElecteur` VARCHAR(30),
   `NumCIN` VARCHAR(30),
-  `NatureProbleme` TEXT,
-  CONSTRAINT `fk_ControleElecteur_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `AdministrateurDGE`(`idAdmin`)
+  `NatureProbleme` TEXT
 ) ENGINE=InnoDB;
 
 
