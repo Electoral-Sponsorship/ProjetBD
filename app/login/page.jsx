@@ -9,13 +9,13 @@ const Form = () => {
         <form className="mt-6">
           <input
             type="email"
-            placeholder="abzo@gmail.com"
+            placeholder="example@gmail.com"
             className="w-full px-4 py-3 mt-4 rounded-lg border focus:ring-2 focus:ring-green-500 focus:outline-none"
             required
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Mot de passe"
             className="w-full px-4 py-3 mt-4 rounded-lg border focus:ring-2 focus:ring-green-500 focus:outline-none"
             required
           />

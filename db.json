@@ -1,0 +1,19 @@
+{
+    "candidats": [
+      {
+        "id": 1,
+        "numeroElecteur": "123456789",
+        "nom": "Diop",
+        "prenom": "Mamadou",
+        "date_naissance": "1985-06-15",
+        "email": "mamadou.diop@example.com",
+        "telephone": "778889900",
+        "parti": "Parti du Soleil",
+        "slogan": "Un Sénégal uni",
+        "couleurs": "Rouge, Vert, Jaune",
+        "urlInfo": "https://parti-soleil.sn",
+        "photo": "mamadou_diop.jpg"
+      }
+    ]
+  }
+  

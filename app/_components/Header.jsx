@@ -7,14 +7,15 @@ export default function Header() {
         {/* Logo Section */}
         <div className="flex items-center">
           <img src="https://th.bing.com/th/id/OIP.fyFuEMr9oQl5ADIsv5WPyQHaJY?rs=1&pid=ImgDetMain" alt="Logo" className="h-10 mr-4" />
-          <h1 className="text-2xl font-bold text-white">Electoral Sponsor Pro</h1>
+          <h1 className="text-2xl font-bold text-white hover:text-yellow-300">Electoral Sponsor Pro</h1>
         </div>
 
         {/* Navigation Links */}
         <nav className="flex space-x-6">
           <a href="/" className="text-white hover:text-yellow-300">Accueil</a>
           <a href="/ListElector" className="text-white hover:text-yellow-300">Import Liste Votants</a>
-          <a href="/confirmation-screen" className="text-white hover:text-yellow-300">Confirmation Screen</a>
+          <a href="/successUploadList" className="text-white hover:text-yellow-300">Confirmation Screen</a>
+          <a href="/candidat" className="text-white hover:text-yellow-300">Espace Candidat</a>
         </nav>
 
         {/* Action Buttons */}
