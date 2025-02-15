@@ -13,6 +13,7 @@ export default function Header() {
         {/* Navigation Links */}
         <nav className="flex space-x-6">
           <a href="/" className="text-white hover:text-yellow-300">Accueil</a>
+      <a href="/backoffice" className="text-white hover:text-yellow-300">Backoffice</a>
           <a href="/ListElector" className="text-white hover:text-yellow-300">Import Liste Votants</a>
           <a href="/successUploadList" className="text-white hover:text-yellow-300">Confirmation Screen</a>
           <a href="/InfCandidat" className="text-white hover:text-yellow-300">Informations Candidats</a>
