@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import { FileDown, FolderUp, Lightbulb } from "lucide-react";
-import Button from "../elements/ButtonUpload";
+import Button from "../../elements/ButtonUpload";
 
 function ListElector() {
   const [selectedFile, setSelectedFile] = useState(null);

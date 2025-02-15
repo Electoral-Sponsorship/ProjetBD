@@ -69,5 +69,13 @@
       "urlInfo": "https://parti-soleil.sn",
       "photo": "Edura-Online-Courses-HTML-Template.jpg"
     }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@mail.com",
+      "password": "passer",
+      "username": "Djibril Kane"
+    }
   ]
 }
