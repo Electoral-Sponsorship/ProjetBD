@@ -1,19 +1,73 @@
 {
-    "candidats": [
-      {
-        "id": 1,
-        "numeroElecteur": "123456789",
-        "nom": "Diop",
-        "prenom": "Mamadou",
-        "date_naissance": "1985-06-15",
-        "email": "mamadou.diop@example.com",
-        "telephone": "778889900",
-        "parti": "Parti du Soleil",
-        "slogan": "Un Sénégal uni",
-        "couleurs": "Rouge, Vert, Jaune",
-        "urlInfo": "https://parti-soleil.sn",
-        "photo": "mamadou_diop.jpg"
-      }
-    ]
-  }
-  
+  "candidats": [
+    {
+      "id": "1",
+      "numeroElecteur": "123456789",
+      "nom": "Diop",
+      "prenom": "Mamadou",
+      "date_naissance": "1985-06-15",
+      "email": "mamadou.diop@example.com",
+      "telephone": "778889900",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "https://parti-soleil.sn",
+      "photo": "mamadou_diop.jpg"
+    },
+    {
+      "id": "0fc9",
+      "numeroElecteur": "12345678",
+      "email": "mamadou.diop@example.com",
+      "telephone": "778889900",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "     https://parti-soleil.sn",
+      "photo": "chauffeur-de-taxi.jpg"
+    },
+    {
+      "id": "ba29",
+      "numeroElecteur": "12345678",
+      "email": "mamadou.diop@example.com",
+      "telephone": "77888990",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "     https://parti-soleil.sn",
+      "photo": "chauffeur-de-taxi.jpg"
+    },
+    {
+      "id": "1168",
+      "numeroElecteur": "12345678",
+      "email": "mamadou.diop@example.com",
+      "telephone": "778889900",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "     https://parti-soleil.sn",
+      "photo": "chauffeur-de-taxi.jpg"
+    },
+    {
+      "id": "95dc",
+      "numeroElecteur": "12345678",
+      "email": "mamadou.diop@example.com",
+      "telephone": "778889900",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "     https://parti-soleil.sn",
+      "photo": "chauffeur-de-taxi.jpg"
+    },
+    {
+      "id": "dce3",
+      "numeroElecteur": "123456789",
+      "email": "dabdallah269@gmail.com",
+      "telephone": "778456589",
+      "parti": "Parti du Soleil",
+      "slogan": "Un Sénégal uni",
+      "couleurs": "Rouge, Vert, Jaune",
+      "urlInfo": "https://parti-soleil.sn",
+      "photo": "Edura-Online-Courses-HTML-Template.jpg"
+    }
+  ]
+}

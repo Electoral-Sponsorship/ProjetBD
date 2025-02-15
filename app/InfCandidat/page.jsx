@@ -75,7 +75,12 @@ const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur
     });
 
     if (response.ok) {
-      alert("✅ Candidature enregistrée avec succès !");
+      toast({
+        title: "Informations enregistrées",
+        description: `✅Vos informations ont été enregistrées avec succès`,
+        variant: "success",
+      });
+
     } else {
       alert("❌ Erreur lors de l’enregistrement !");
     }
@@ -163,13 +168,7 @@ const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur
           </form>
         )}
 
-        {/* Bouton pour générer un nouveau code */}
-        {candidatInfo && (
-          <button className="w-full mt-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition flex items-center justify-center">
-            <RefreshCw className="mr-2" />
-            Générer un nouveau code
-          </button>
-        )}
+        
       </div>
     </div>
   );
