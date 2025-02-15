@@ -17,6 +17,7 @@ export default function Header() {
           <a href="/ListElector" className="text-white hover:text-yellow-300">Import Liste Votants</a>
           <a href="/successUploadList" className="text-white hover:text-yellow-300">Confirmation Screen</a>
           <a href="/InfCandidat" className="text-white hover:text-yellow-300">Informations Candidats</a>
+          <a href="/sponsorship" className="text-white hover:text-yellow-300">Enregistrer parrain</a>
         </nav>
 
         {/* Action Buttons */}
