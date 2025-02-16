@@ -16,7 +16,7 @@ class ElecteurController extends Controller
     {
         // Validation du fichier
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt', // Modifier les types selon besoin
+            'electoral_file' => 'required|file|mimes:csv,txt', // Modifier les types selon besoin
         ]);
 
         try {
@@ -45,7 +45,7 @@ public function importElectoralFile(Request $request)
     {
         // 1. Validation du fichier envoyé
         $request->validate([
-            'csv_file' => 'required|file|mimes:csv,txt',
+            'electoral_file' => 'required|file|mimes:csv,txt',
         ]);
 
         try {
