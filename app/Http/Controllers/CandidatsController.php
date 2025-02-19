@@ -26,11 +26,16 @@ class CandidatsController extends Controller
         $candidat = Candidat::where('numElecteur', '=', $numeroElecteur)->first();
         if($candidat) {
             return response()->json([
-                'message' => 'Ce candidat existe déjà.' 
+                'message' => 'Ce candidat existe deja.' 
             ]);
         }
         return response()->json([
-            'message' => 'Cet électeur existe et peut être candidat.' 
+            'message' => 'Cet electeur existe et peut etre candidat.',
+            'candidat' => [
+                'nom' => $electeur->nom,
+                'prenom' => $electeur->prenoms,
+                'ddn' => $electeur->dateNaissance
+            ], 
         ]);
     }
 
@@ -53,7 +58,7 @@ class CandidatsController extends Controller
         $candidat = Candidat::where('numElecteur', '=', $request->numeroElecteur)->first();
         if($candidat) {
             return response()->json([
-                'message' => 'Ce candidat existe déjà.',
+                'message' => 'Ce candidat existe deja.',
             ]);
                
         }
