@@ -10,4 +10,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::apiResource('/candidats', CandidatsController::class);
 Route::get('verify/{numeroElecteur}',[CandidatsController::class, 'verify']);
-Route::post('register', [CandidatsController::class, 'verify']);
+Route::post('register', [CandidatsController::class, 'register']);
+
+

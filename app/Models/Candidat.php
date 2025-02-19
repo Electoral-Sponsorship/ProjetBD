@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Electeur;
 use Illuminate\Database\Eloquent\Model;
 
 class Candidat extends Model
@@ -18,4 +19,8 @@ class Candidat extends Model
         "couleurs",
         "urlPageInfo"
     ];
+
+    public function electeur() {
+        return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
+    }
 }
