@@ -14,8 +14,6 @@ Route::get('verify/{numeroElecteur}',[CandidatsController::class, 'verify']);
 Route::post('register', [CandidatsController::class, 'register']);
 
 
-//Route::post('/import-electoralFile',[ElecteurController::class, 'importElectoralFile']);
-//Route::post('/calculate-checksum',[ElecteurController::class, 'calculateChecksum']);
 Route::get('/check-electoralFile', [ElecteurController::class, 'checkElectoralFile']);
 
 
