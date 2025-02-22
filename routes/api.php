@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CandidatsController;
 use App\Http\Controllers\ElecteurController;
+use App\Models\Parrainage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,5 @@ Route::post('register', [CandidatsController::class, 'register']);
 
 Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoralFile']);
 Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
+Route::post('/setSponsorshipPeriod',[Parrainage::class, 'setSponsorshipPeriod']);
 

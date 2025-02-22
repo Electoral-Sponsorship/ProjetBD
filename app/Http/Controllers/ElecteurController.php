@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\ControleElecteur;
 use App\Models\ElecteurTemporaire;
 use App\Models\Historisation;
+use App\Models\Parrainage;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Electeur;
-use Mockery\Exception;
 
 
 class ElecteurController extends Controller
@@ -316,7 +314,7 @@ class ElecteurController extends Controller
 
     }
 
-    /**
+/**
      * Display a listing of the resource.
      */
     public
