@@ -18,74 +18,16 @@ use Mockery\Exception;
 class ElecteurController extends Controller
 {
 
-    public function calculateChecksum(Request $request)
-    {
-//        // Validation du fichier
-//        $request->validate([
-//            'electoral_file' => 'required|file|mimes:csv,txt', // Modifier les types selon besoin
-//        ]);
-
-        try {
-            // Récupérer le fichier téléchargé
-            $file = $request->file('electoral_file');
-
-            // Calculer l'empreinte SHA256 du fichier
-            $checksum = hash_file('sha256', $file->getRealPath());
-
-            // Retourner l'empreinte en réponse
-            return response()->json([
-                'status' => 'success',
-                'checksum' => $checksum,
-            ], 200);
-
-        } catch (\Exception $e) {
-            // Gestion des erreurs
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Erreur lors du calcul de l\'empreinte : ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function importElectoralFile(Request $request)
-    {
-
-        try {
-            $csv = Reader::createFromPath($request->file('electoral_file')->getRealPath(), 'r');
-//            $csvPath = 'C:\\Users\\latee\\Downloads\\electeurs.csv';
-//            $csv = Reader::createFromPath($csvPath, 'r');
-            $csv->setHeaderOffset(0);
-
-
-            foreach ($csv->getRecords() as $record) {
-//                dd($record);
-                ElecteurTemporaire::create([
-                    'numElecteur' => $record['numElecteur'],
-                    'numCIN' => $record['numCIN'],
-                    'nom' => $record['nom'],
-                    'prenoms' => $record['prenoms'],
-                    'dateNaissance' => $record['dateNaissance'],
-                    'lieuNaissance' => $record['lieuNaissance'],
-                    'sexe' => $record['sexe']
-                ]);
-            }
-            return response()->json([
-                'status' => 'success',
-                'description' => "Insertion dans la table temporaire réussie"
-            ]);
-
-        } catch (\Exception $e) {
-            // Gestion d'une erreur inattendue lors du traitement
-            return response()->json([
-                'status' => 'error',
-                'description' => "Impossible d'insérer les données",
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
+    protected static $EtatUploadElecteurs = false;
 
     public function checkElectoralFile(Request $request)
     {
+        if (self::$EtatUploadElecteurs) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Un fichier electoral est déjà en cours d\'imporation et/ou de validation ',
+            ]);
+        }
 //        $filePath = "D:\\ESP\\L3 GLSI\\SGBD\\electeurs.csv";
 //        $file = $file = new UploadedFile($filePath, basename($filePath), 'text/csv', null, true);
 
@@ -104,6 +46,8 @@ class ElecteurController extends Controller
             'electoral_file' => 'required|file|mimes:csv,txt',
             'checksum' => 'required'
         ]);
+
+        self::$EtatUploadElecteurs = true;
 
         try {
             $checksum = $request->input('checksum');
@@ -173,6 +117,7 @@ class ElecteurController extends Controller
             }
 
         } catch (\Exception $e) {
+            self::$EtatUploadElecteurs = false;
             return response()->json([
                 'status' => 'error',
                 'description' => $e->getMessage()
@@ -180,8 +125,76 @@ class ElecteurController extends Controller
         }
     }
 
+    public function calculateChecksum(Request $request)
+    {
+//        // Validation du fichier
+//        $request->validate([
+//            'electoral_file' => 'required|file|mimes:csv,txt', // Modifier les types selon besoin
+//        ]);
+
+        try {
+            // Récupérer le fichier téléchargé
+            $file = $request->file('electoral_file');
+
+            // Calculer l'empreinte SHA256 du fichier
+            $checksum = hash_file('sha256', $file->getRealPath());
+
+            // Retourner l'empreinte en réponse
+            return response()->json([
+                'status' => 'success',
+                'checksum' => $checksum,
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            self::$EtatUploadElecteurs = false;
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erreur lors du calcul de l\'empreinte : ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function importElectoralFile(Request $request)
+    {
+        try {
+            $csv = Reader::createFromPath($request->file('electoral_file')->getRealPath(), 'r');
+//            $csvPath = 'C:\\Users\\latee\\Downloads\\electeurs.csv';
+//            $csv = Reader::createFromPath($csvPath, 'r');
+            $csv->setHeaderOffset(0);
+
+
+            foreach ($csv->getRecords() as $record) {
+//                dd($record);
+                ElecteurTemporaire::create([
+                    'numElecteur' => $record['numElecteur'],
+                    'numCIN' => $record['numCIN'],
+                    'nom' => $record['nom'],
+                    'prenoms' => $record['prenoms'],
+                    'dateNaissance' => $record['dateNaissance'],
+                    'lieuNaissance' => $record['lieuNaissance'],
+                    'sexe' => $record['sexe']
+                ]);
+            }
+            return response()->json([
+                'status' => 'success',
+                'description' => "Insertion dans la table temporaire réussie"
+            ]);
+
+        } catch (\Exception $e) {
+            // Gestion d'une erreur inattendue lors du traitement
+            self::$EtatUploadElecteurs = false;
+            return response()->json([
+                'status' => 'error',
+                'description' => "Impossible d'insérer les données",
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function checkElector(Request $request)
     {
+
         $file = $request->file('electoral_file');
         $csv = Reader::createFromPath($file->getRealPath(), 'r');
 //            $csvPath = 'C:\\Users\\latee\\Downloads\\electeurs.csv';
@@ -235,6 +248,7 @@ class ElecteurController extends Controller
 
         }
         if (!$bool) {
+            self::$EtatUploadElecteurs = false;
             return response()->json([
                 'status' => 'error',
                 'description' => 'Erreur de validation des données du fichier importé',
@@ -290,6 +304,7 @@ class ElecteurController extends Controller
                 'description' => 'Données transférées avec succès de la table temporaire vers la table persistante.'
             ]);
         } catch (\Exception $e) {
+            self::$EtatUploadElecteurs = false;
             // Si une erreur survient, rollback de la transaction
             DB::rollBack();
 
