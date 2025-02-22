@@ -7,3 +7,13 @@ Route::get('/', function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::get('/admin', function () {
+    return view('admin');
+});
+
+Route::get('/candidat', function () {
+    return view('candidat');
+});
+
