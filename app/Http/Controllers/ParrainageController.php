@@ -24,7 +24,7 @@ class ParrainageController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'errors' => $validator->errors()
+                'description' => $validator->errors()
             ], 400);
         }
 
@@ -38,7 +38,7 @@ class ParrainageController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Période de parrainage défini. Les candidats seront à présent restreintes.'
+                'description' => 'Période de parrainage défini. Les candidats seront à présent restreintes.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
