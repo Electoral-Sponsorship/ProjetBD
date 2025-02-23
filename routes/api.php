@@ -13,7 +13,8 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::apiResource('/candidats', CandidatsController::class);
 Route::get('verify/{numeroElecteur}',[CandidatsController::class, 'verify']);
 Route::post('register', [CandidatsController::class, 'register']);
-
+Route::post('resendCode/{numeroElecteur}', [CandidatsController::class, 'resendCode']);
+Route::post('verifyCode', [CandidatsController::class, 'verifyCode']);
 
 Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoralFile']);
 Route::post('/validate-import', [ElecteurController::class, 'validateImport']);

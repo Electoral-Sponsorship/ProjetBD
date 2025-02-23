@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Candidat;
 use App\Models\Electeur;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use App\Notifications\CandidatMail;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class CandidatsController extends Controller
@@ -30,12 +32,15 @@ class CandidatsController extends Controller
             ]);
         }
         return response()->json([
-            'message' => 'Cet electeur existe et peut etre candidat.',
-            'candidat' => [
-                'nom' => $electeur->nom,
-                'prenom' => $electeur->prenoms,
-                'ddn' => $electeur->dateNaissance
-            ], 
+            [
+                'message' => 'Cet electeur existe et peut etre candidat.',
+                'candidat' => [
+                    'nom' => $electeur->nom,
+                    'prenom' => $electeur->prenoms,
+                    'numElecteur' => $electeur->numElecteur,
+                    'ddn' => $electeur->dateNaissance
+                ],
+            ] 
         ]);
     }
 
@@ -62,6 +67,11 @@ class CandidatsController extends Controller
             ]);
                
         }
+        if (Candidat::where('adresseMail', '=', $request->email)->exists()) {
+            return response()->json([
+                'message' => 'Cet email est déjà utilisé par un autre candidat.',
+            ]);
+        }
         $candidat = Candidat::create([
             'numElecteur' => $request->numeroElecteur,
             'numTel' => $request->telephone,
@@ -71,10 +81,50 @@ class CandidatsController extends Controller
             'couleurs' =>  $request->couleurs,
             'urlPageInfo' => $request->urlInfo
         ]);
+        $code = rand(1000, 9999);
+        Cache::put('code_verification_' . $request->numeroElecteur, $code, now()->addMinutes(10));
+        $candidat->notify(new CandidatMail($code, $electeur->prenoms, $electeur->nom));
         return response()->json([
-            'message' => 'Candidat enregistré avec succès',
+            'message' => 'Candidat enregistre avec succes. Un code de securite a ete envoye par e-mail',
             'candidat' => $candidat 
         ]);
+    }
+
+    public function resendCode($numeroElecteur) {
+        $candidat = Candidat::with('electeur')->where('numElecteur', '=', $numeroElecteur)->first();
+        if (!$candidat) {
+            return response()->json(['message' => 'Candidat non trouvé.']);
+        }
+        $code = rand(1000, 9999);
+        Cache::put('code_verification_' . $numeroElecteur, $code, now()->addMinutes(10));
+        $candidat->notify(new CandidatMail($code, $candidat->electeur->prenoms, $candidat->electeur->nom));
+        return response()->json([
+            'message' => 'Le nouveau code de securite a ete envoye par e-mail',
+        ]);
+    }
+
+    public function verifyCode(Request $request){
+        $request->validate([
+            'email' => 'required|string',
+            'code' => 'required|string',
+        ]);
+        $candidat = Candidat::where('adresseMail', '=', $request->email)->first();
+        $codeStocke = Cache::get('code_verification_' . $candidat->numElecteur);
+        if (!$codeStocke) {
+            return response()->json([
+                'message' => 'Code expiré ou inexistant. Veuillez renvoyer un nouveau code.',
+            ]);
+        }
+        if ($request->code == $codeStocke) {
+            Cache::forget('code_verification_' . $candidat->numElecteur);
+            return response()->json([
+                'message' => 'Code de sécurité vérifié avec succès. Vous pouvez accéder à votre espace candidat.',
+            ]);
+        }else {
+            return response()->json([
+                'message' => 'Code incorrect. Veuillez réessayer.',
+            ]);
+        }
     }
 
     /**
