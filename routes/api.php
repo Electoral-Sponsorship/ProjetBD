@@ -11,7 +11,8 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::apiResource('/candidats', CandidatsController::class);
 Route::get('verify/{numeroElecteur}',[CandidatsController::class, 'verify']);
 Route::post('register', [CandidatsController::class, 'register']);
-
+Route::post('resendCode/{numeroElecteur}', [CandidatsController::class, 'resendCode']);
+Route::post('verifyCode', [CandidatsController::class, 'verifyCode']);
 
 Route::post('/import-electoralFile',[\App\Http\Controllers\ElecteurController::class, 'importElectoralFile']);
 Route::post('/calculate-checksum',[\App\Http\Controllers\ElecteurController::class, 'calculateChecksum']);

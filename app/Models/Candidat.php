@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Models\Electeur;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Candidat extends Model
 {
     //
+    
+    use Notifiable;
     public $timestamps = false;
     protected $fillable = [
         "idCandidat",
@@ -22,5 +25,9 @@ class Candidat extends Model
 
     public function electeur() {
         return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
+    }
+
+    public function routeNotificationForMail($notification){
+        return $this->adresseMail;
     }
 }
