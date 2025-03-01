@@ -4,15 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Parrainage extends Model
+class GestionParrainage extends Model
 {
     //
-    protected $table = 'parrainages';
+    protected $table = 'gestionparrainages';
     public $timestamps = false;
     protected $fillable =[
-        "dateDebut",
-        "dateFin",
-        "etatOuverture",
+        "idCandidat",
         "idAdmin"
     ];
 }

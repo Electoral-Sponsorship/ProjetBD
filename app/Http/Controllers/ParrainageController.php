@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidat;
 use App\Models\Electeur;
+use App\Models\GestionParrainage;
 use App\Models\Parrain;
 use App\Models\Parrainage;
 use App\Notifications\ParrainagevalidationMail;
@@ -36,7 +37,7 @@ class ParrainageController extends Controller
         }
 
         try {
-            Parrainage::create([
+            GestionParrainage::create([
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
                 'etatOuverture' => true, // Etat "ouvert" est true
@@ -189,7 +190,10 @@ class ParrainageController extends Controller
 //        $parrain->update(['codevalidation' => $code]);
         DB::table('parrains')
             ->where('numElecteur', $parrain->numElecteur)
-            ->update(['codevalidation' => $code]);
+            ->update([
+                'codevalidation' => $code,
+                'dateParrainage' => Carbon::today()
+            ]);
 
 //        return($parrain);
         $parrain->notify(new ParrainageVerificationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));

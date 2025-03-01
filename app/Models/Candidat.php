@@ -18,10 +18,16 @@ class Candidat extends Model
         "slogan",
         "couleurs",
         "urlPageInfo",
-        "photo"
+        "photo",
+        "refParrainage"
     ];
 
     public function electeur() {
         return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
+    }
+
+    public function foreigner()
+    {
+        return $this->belongsTo(Parrain::class, 'refParrainage', 'codevalidation');
     }
 }

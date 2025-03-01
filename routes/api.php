@@ -18,7 +18,7 @@ Route::post('register', [CandidatsController::class, 'register']);
 
 Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoralFile']);
 Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
-Route::post('/set-sponsorship-period',[Parrainage::class, 'setSponsorshipPeriod']);
+Route::post('/set-sponsorship-period',[ParrainageController::class, 'setSponsorshipPeriod']);
 Route::post('/verify-elector', [ParrainageController::class, 'verifyElector']);
 Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
 Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
