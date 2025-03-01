@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('parrainages', function (Blueprint $table) {
+        Schema::table('parrains', function (Blueprint $table) {
             //
+            $table->integer('codevalidation')->unique()->nullable();
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('parrainages', function (Blueprint $table) {
+        Schema::table('parrains', function (Blueprint $table) {
             //
+            $table->dropColumn('codevalidation')->unique()->nullable();
         });
     }
 };

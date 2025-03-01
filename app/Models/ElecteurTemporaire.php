@@ -16,6 +16,7 @@ class ElecteurTemporaire extends Model
         "prenoms",
         "dateNaissance",
         "lieuNaissance",
-        "sexe"
+        "sexe",
+        "bureauVote"
     ];
 }

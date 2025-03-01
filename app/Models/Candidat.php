@@ -20,14 +20,21 @@ class Candidat extends Model
         "nomParti",
         "slogan",
         "couleurs",
-        "urlPageInfo"
+        "urlPageInfo",
+        "photo",
+        "refParrainage"
     ];
 
     public function electeur() {
         return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
     }
 
+    public function foreigner()
+    {
+        return $this->belongsTo(Parrain::class, 'refParrainage', 'codevalidation');
+    }
     public function routeNotificationForMail($notification){
         return $this->adresseMail;
+
     }
 }

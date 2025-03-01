@@ -58,14 +58,14 @@ CREATE TABLE `Electeurs_Temporaires` (
   `lieuNaissance` TEXT,
   `sexe` TEXT
 ) ENGINE=InnoDB;
-
-CREATE TABLE `Parrainages` (
-  `dateDebut` DATE,
-  `dateFin` DATE,
-  `etatOuverture` BOOLEAN DEFAULT FALSE,
-  `idAdmin` INT,
-  CONSTRAINT `fk_Parrainage_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `Administrateurs`(`idAdmin`)
-) ENGINE=InnoDB;
+--
+-- CREATE TABLE `Parrainages` (
+--   `dateDebut` DATE,
+--   `dateFin` DATE,
+--   `etatOuverture` BOOLEAN DEFAULT FALSE,
+--   `idAdmin` INT,
+--   CONSTRAINT `fk_Parrainage_Admin` FOREIGN KEY (`idAdmin`) REFERENCES `Administrateurs`(`idAdmin`)
+-- ) ENGINE=InnoDB;
 
 CREATE TABLE `Historisations` (
   `idHistorisation` INT PRIMARY KEY AUTO_INCREMENT,
