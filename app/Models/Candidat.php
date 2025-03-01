@@ -17,7 +17,8 @@ class Candidat extends Model
         "nomParti",
         "slogan",
         "couleurs",
-        "urlPageInfo"
+        "urlPageInfo",
+        "photo"
     ];
 
     public function electeur() {
