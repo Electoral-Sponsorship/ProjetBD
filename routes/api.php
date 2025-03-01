@@ -24,12 +24,13 @@ Route::post('/set-sponsorship-period', [Parrainage::class, 'setSponsorshipPeriod
 
 // 📌 Routes d'authentification de l'administrateur
 Route::prefix('admin')->group(function () {
-    Route::post('/login', [AdministrateurController::class, 'login']); // Connexion
-
+    Route::post('login', [AdministrateurController::class, 'login']); // Connexion
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/me', [AdministrateurController::class, 'user']); // Récupération des infos de l'administrateur connecté
-        Route::post('/logout', [AdministrateurController::class, 'logout']); // Déconnexion
+        Route::get('me', [AdministrateurController::class, 'user']); // Récupération des infos de l'administrateur connecté
+        Route::post('logout', [AdministrateurController::class, 'logout']); // Déconnexion
     });
+
 });
+
 
 
