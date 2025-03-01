@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Candidat;
+use App\Models\Electeur;
+use App\Models\GestionParrainage;
+use App\Models\Parrain;
 use App\Models\Parrainage;
+use App\Notifications\ParrainagevalidationMail;
+use App\Notifications\ParrainageVerificationMail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ParrainageController extends Controller
@@ -29,7 +37,7 @@ class ParrainageController extends Controller
         }
 
         try {
-            Parrainage::create([
+            GestionParrainage::create([
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
                 'etatOuverture' => true, // Etat "ouvert" est true
@@ -47,6 +55,157 @@ class ParrainageController extends Controller
             ], 500); // Code d'erreur 500 pour des erreurs serveur
         }
     }
+
+    public function verifyElector(Request $request)
+    {
+        $validatedData = $request->validate([
+            'numElecteur' => 'required|string',
+            'numCIN' => 'required|string',
+        ]);
+
+        $electeur = Electeur::where('numElecteur', $validatedData['numElecteur'])
+            ->where('numCIN', $validatedData['numCIN'])
+            ->first();
+
+        if (!$electeur) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Les informations fournies sont incorrectes.'
+            ], 404);
+        }
+
+        return response()->json([
+            'nom' => $electeur->nom,
+            'prenoms' => $electeur->prenoms,
+            'dateNaissance' => $electeur->dateNaissance,
+            'bureauVote' => $electeur->bureauVote ?? 'Non défini',
+        ]);
+    }
+
+    public function verifyAuthCode(Request $request)
+    {
+        // Validation des données
+        $validatedData = $request->validate([
+            'numElecteur' => 'required|string',
+            'codeAuth' => 'required|string', // Code d'authentification
+        ]);
+
+        // Recherche du parrain par le numéro d'électeur
+        $parrain = Parrain::where('numElecteur', $validatedData['numElecteur'])
+            ->first();
+
+        // Vérification du parrain
+        if (!$parrain) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Les informations du parrain sont incorrectes.'
+            ], 404);
+        }
+
+        // Vérification du code d'authentification
+        if ($parrain->code !== $validatedData['auth_code']) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Le code d\'authentification est invalide.'
+            ], 400);
+        }
+
+        // Si le code est valide, récupérer la liste des candidats
+        return $this->getCandidatesList();
+    }
+
+
+    public function getCandidatesList()
+    {
+        // Récupérer tous les candidats
+        $candidats = Candidat::all();
+
+        if ($candidats->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Aucun candidat disponible.'
+            ], 404);
+        }
+
+        // Retourner les informations des candidats
+        return response()->json([
+            'status' => 'success',
+            'candidats' => $candidats->map(function ($candidat) {
+                return [
+                    'nom' => $candidat->nom,
+                    'parti' => $candidat->nomParti,
+                    'slogan' => $candidat->slogan,
+                    'couleurs' => $candidat->couleurs,
+                    'urlPageInfo' => $candidat->urlPageInfo,
+                    'photo' => url('storage/' . $candidat->photo),  // Assurez-vous que la photo est dans le dossier 'storage'
+                ];
+            })
+        ]);
+    }
+
+    public function sendValidationCode(Request $request)
+    {
+        $validatedData = $request->validate([
+            'numElecteur' => 'required|string',
+        ]);
+
+        $parrain = Parrain::with('foreigner')->where("numElecteur", "1001")->first();
+
+        $code = rand(10000, 99999);
+        Cache::put('code_verification_' . $validatedData['numElecteur'], $code, now()->addMinutes(10));
+        $parrain->notify(new ParrainagevalidationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));
+
+        return response()->json([
+            'status' => 'success',
+            'desciption' => 'Code de vérification envoyé'
+        ]);
+    }
+
+    public function sendVerificationCode(Request $request)
+    {
+        $validatedData = $request->validate([
+            'numElecteur' => 'required|string',
+            'codeValidation' => 'required|string',
+        ]);
+
+        $numElecteur = $validatedData['numElecteur'];
+        $code = Cache::get('code_verification_' . $numElecteur);
+
+        if ($code != $validatedData['codeValidation']) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Code expiré'
+            ]);
+        }
+
+        do {
+            $code = rand(10000, 99999);
+        } while (Parrain::where('codevalidation', $code)->exists());
+
+
+        // Trouver le parrain avec son numElecteur
+        $parrain = Parrain::all()->where("numElecteur", "1001")->first();
+//        $parrain->codevalidation = $code;
+
+//        $parrain->update(['codevalidation' => $code]);
+        DB::table('parrains')
+            ->where('numElecteur', $parrain->numElecteur)
+            ->update([
+                'codevalidation' => $code,
+                'dateParrainage' => Carbon::today()
+            ]);
+
+//        return($parrain);
+        $parrain->notify(new ParrainageVerificationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));
+
+        return response()->json([
+            'status' => 'success',
+            'description' => 'Parrainage effectué'
+        ]);
+
+
+    }
+
     public function index()
     {
         //

@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\ParrainageController;
 use App\Models\Parrainage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
@@ -21,7 +21,12 @@ Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoral
 Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
 
 // 📌 Routes pour la gestion du parrainage
-Route::post('/set-sponsorship-period', [Parrainage::class, 'setSponsorshipPeriod']);
+Route::post('/set-sponsorship-period',[ParrainageController::class, 'setSponsorshipPeriod']);
+Route::post('/verify-elector', [ParrainageController::class, 'verifyElector']);
+Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
+Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
+Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
+
 
 // 📌 Routes d'authentification de l'administrateur
 Route::prefix('admin')->group(function () {
@@ -32,6 +37,5 @@ Route::prefix('admin')->group(function () {
     });
 
 });
-
 
 
