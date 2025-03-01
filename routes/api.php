@@ -1,7 +1,7 @@
 <?php
 
+
 use App\Models\Parrainage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\CandidatsController;
@@ -30,10 +30,8 @@ Route::prefix('admin')->group(function () {
         Route::get('me', [AdministrateurController::class, 'user']); // Récupération des infos de l'administrateur connecté
         Route::post('logout', [AdministrateurController::class, 'logout']); // Déconnexion
     });
+
 });
-
-
-
 
 
 
