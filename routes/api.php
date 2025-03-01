@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\CandidatsController;
-use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\ParrainageController;
-use App\Http\Controllers\AdministrateurController;
 use App\Models\Parrainage;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ElecteurController;
+use App\Http\Controllers\CandidatsController;
+use App\Http\Controllers\AdministrateurController;
 
 // 📌 Routes pour les candidats
 Route::apiResource('/candidats', CandidatsController::class);
