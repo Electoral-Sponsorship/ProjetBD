@@ -42,12 +42,14 @@ class ElecteurController extends Controller
 
         $request->validate([
             'electoral_file' => 'required|file|mimes:csv,txt',
-            'checksum' => 'required'
+            'checksum' => 'required',
+            'idAdmin' => 'required',
         ]);
 
         self::$EtatUploadElecteurs = true;
 
         try {
+            $idAdmin = $request->input("idAdmin");
             $checksum = $request->input('checksum');
             $jsonData = $this->calculateChecksum($request)->getData(true);
 
@@ -95,9 +97,10 @@ class ElecteurController extends Controller
 //                        }
 
                 } else {
+                    $ipAddress = $request->header('X-Forwarded-For') ?? $request->ip();
                     Historisation::create([
-                        "idAdmin" => "",
-                        "adresseIp" => "",
+                        "idAdmin" => $idAdmin,
+                        "adresseIp" => $ipAddress,
                         "dateHistorisation" => date("Y-m-d"),
                         "clef" => $checksum
                     ]);
@@ -161,6 +164,7 @@ class ElecteurController extends Controller
 //            $csv = Reader::createFromPath($csvPath, 'r');
             $csv->setHeaderOffset(0);
 
+            ElecteurTemporaire::truncate();
 
             foreach ($csv->getRecords() as $record) {
 //                dd($record);
@@ -193,6 +197,7 @@ class ElecteurController extends Controller
     public function checkElector(Request $request)
     {
 
+        $idAdmin = $request->input('idAdmin');
         $file = $request->file('electoral_file');
         $csv = Reader::createFromPath($file->getRealPath(), 'r');
 //            $csvPath = 'C:\\Users\\latee\\Downloads\\electeurs.csv';
@@ -237,7 +242,7 @@ class ElecteurController extends Controller
                 $bool = false;
                 // Enregistrer les erreurs dans la table controle_electeurs
                 ControleElecteur::create([
-                    'idAdmin' => '',
+                    'idAdmin' => $idAdmin,
                     'NumElecteur' => $record['numElecteur'],
                     'NumCIN' => $record['numCIN'],
                     'NatureProbleme' => json_encode($validator->errors()),
@@ -314,7 +319,7 @@ class ElecteurController extends Controller
 
     }
 
-/**
+    /**
      * Display a listing of the resource.
      */
     public
