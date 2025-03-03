@@ -26,7 +26,6 @@ Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']
 Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
 Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
 
-
 // 📌 Routes d'authentification de l'administrateur
 Route::prefix('admin')->group(function () {
     Route::post('login', [AdministrateurController::class, 'login']); // Connexion
