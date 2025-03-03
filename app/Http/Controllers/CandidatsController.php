@@ -14,9 +14,25 @@ class CandidatsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(){
-        //
-    }
+    public function index() {
+    $candidats = Candidat::with('electeur')->get();
+    $formattedCandidats = $candidats->map(function ($candidat) {
+        return [
+            'idCandidat' => $candidat->idCandidat,
+            'nom' => $candidat->electeur->nom,
+            'prenom' => $candidat->electeur->prenoms,
+            'numElecteur' => $candidat->electeur->numElecteur,
+            'ddn' => $candidat->electeur->dateNaissance,
+            'email' => $candidat->adresseMail,
+            'parti' => $candidat->nomParti,
+            'slogan' => $candidat->slogan,
+            'telephone' => $candidat->numTel,
+            'couleurs' => $candidat->couleurs,
+        ];
+    });
+
+    return response()->json($formattedCandidats, 200);
+}
 
     private function generateCode() {
         do {
@@ -30,13 +46,13 @@ class CandidatsController extends Controller
         if(!$electeur) {
             return response()->json([
                 'message' => 'Cet electeur n\'existe pas' 
-            ]);
+            ],400);
         }
         $candidat = Candidat::where('numElecteur', '=', $numeroElecteur)->first();
         if($candidat) {
             return response()->json([
                 'message' => 'Ce candidat existe deja.' 
-            ]);
+            ],400);
         }
         return response()->json([
             'message' => 'Cet electeur existe et peut etre candidat.',
@@ -46,7 +62,7 @@ class CandidatsController extends Controller
                 'numElecteur' => $electeur->numElecteur,
                 'ddn' => $electeur->dateNaissance
             ],
-        ]);
+        ], 200);
     }
 
     public function register(Request $request) {
@@ -58,25 +74,25 @@ class CandidatsController extends Controller
             'slogan' => 'required|string',
             'couleurs' => 'required|string',
             'urlInfo' => 'required|url',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         $electeur = Electeur::where('numElecteur', '=', $request->numeroElecteur)->first();
         if(!$electeur) {
             return response()->json([
                 'message' => 'Cet electeur n\'existe pas' 
-            ]);
+            ],400);
         }
         $candidat = Candidat::where('numElecteur', '=', $request->numeroElecteur)->first();
         if($candidat) {
             return response()->json([
                 'message' => 'Ce candidat existe deja.',
-            ]);
+            ],400);
                
         }
         if (Candidat::where('adresseMail', '=', $request->email)->exists()) {
             return response()->json([
                 'message' => 'Cet email est déjà utilisé par un autre candidat.',
-            ]);
+            ],400);
         }
         $candidat = Candidat::create([
             'numElecteur' => $request->numeroElecteur,
@@ -94,7 +110,7 @@ class CandidatsController extends Controller
         return response()->json([
             'message' => 'Candidat enregistre avec succes. Un code de securite a ete envoye par e-mail',
             'candidat' => $candidat 
-        ]);
+        ], 201);
     }
 
     public function resendCode($numeroElecteur) {
@@ -102,14 +118,14 @@ class CandidatsController extends Controller
         if (!$candidat) {
             return response()->json([
                 'message' => 'Candidat non trouvé.'
-            ]);
+            ], 400);
         }
         $codeAuth = $this->generateCode();
         Cache::put('code_verification_' . $numeroElecteur, $codeAuth, now()->addMinutes(10));
         $candidat->notify(new CandidatMail($codeAuth, $candidat->electeur->prenoms, $candidat->electeur->nom));
         return response()->json([
             'message' => 'Le nouveau code de securite a ete envoye par e-mail',
-        ]);
+        ], 201);
     }
 
     public function verifyCode(Request $request){
