@@ -11,6 +11,7 @@ class Candidat extends Model
     //
     
     use Notifiable;
+    protected $primaryKey = 'idCandidat';
     public $timestamps = false;
     protected $fillable = [
         "idCandidat",
@@ -22,6 +23,7 @@ class Candidat extends Model
         "couleurs",
         "urlPageInfo",
         "photo",
+        "codeAuth",
         "refParrainage"
     ];
 
