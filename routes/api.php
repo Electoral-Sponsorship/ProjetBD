@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ParrainageController;
-use App\Models\Parrainage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\CandidatsController;
@@ -26,7 +25,6 @@ Route::post('/verify-elector', [ParrainageController::class, 'verifyElector']);
 Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
 Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
 Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
-
 
 // 📌 Routes d'authentification de l'administrateur
 Route::prefix('admin')->group(function () {

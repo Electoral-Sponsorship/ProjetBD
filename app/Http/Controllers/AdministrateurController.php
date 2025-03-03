@@ -30,7 +30,7 @@ class AdministrateurController extends Controller{
         }
 
         // 🔥 Récupérer la vraie adresse IP
-        $ipAddress = $request->ip();
+        $ipAddress = $request->header('X-Forwarded-For') ?? $request->ip();
 
         // 🔍 Log pour vérifier si Laravel détecte bien l'IP
         Log::info('Adresse IP détectée : ' . $ipAddress);
