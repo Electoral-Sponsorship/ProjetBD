@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isJson;
 
 class ParrainageController extends Controller
 {
@@ -56,7 +58,7 @@ class ParrainageController extends Controller
         }
     }
 
-    public function verifyElector(Request $request)
+    public function verifyIdentifiers(Request $request)
     {
         $validatedData = $request->validate([
             'numElecteur' => 'required|string',
@@ -202,6 +204,57 @@ class ParrainageController extends Controller
             'status' => 'success',
             'description' => 'Parrainage effectué'
         ]);
+
+
+    }
+
+    public function trackSponsorshipProgress(Request $request)
+    {
+        $request->validate([
+            'idUser' => 'required|integer',
+            'codeAuth' => 'required|integer',
+            'email' => 'email|string',
+        ]);
+
+
+        $candidatExists = Candidat::where([
+            ['codeAuth', '=', $request->input('codeAuth')],
+            ['adresseMail', '=', $request->input('email')]
+        ])->exists();
+
+
+        if(!$candidatExists){
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Cette candidat est introuvable.'
+            ]);
+        };
+
+        $id = $request->input('idUser');
+        $parrainages = Parrainage::where('idCandidat', $id)->get();  // Utilise get() pour récupérer les résultats
+
+        if ($parrainages->isEmpty()) {  // Vérifie si la collection est vide
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Désolé vous n\'avez aucun parrainage disponible.'
+            ]);
+        } else {
+            $electeurs = [];
+
+
+            foreach ($parrainages as $parrainnage) {
+                $idparrain = $parrainnage->idParrain;
+                $parrain = Parrain::where('idParrain', $idparrain)->get()->first();
+                $electeur = $parrain->foreigner;
+                $electeurs[] = [
+                    'numElecteur' => $electeur->numElecteur,
+                    'nom' => $electeur->nom,
+                    'prenoms' => $electeur->prenoms,
+                    'sexe' => $electeur->sexe,
+                ];
+            }
+            return response()->json($electeurs);  // Retourne les parrainages si disponibles
+        }
 
 
     }
