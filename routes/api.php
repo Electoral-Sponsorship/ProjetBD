@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ParrainageController;
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\CandidatsController;
@@ -23,7 +24,7 @@ Route::post('/verifyCode', [CandidatsController::class, 'verifyCode']);
 // 📌 Routes pour la gestion du parrainage
 Route::middleware(\App\Http\Middleware\CorsMiddleware::class)->group(function () {
     Route::post('/set-sponsorship-period', [ParrainageController::class, 'setSponsorshipPeriod']);
-    Route::post('/verify-identifiers', [ParrainageController::class, 'verifyIdentifiers']);
+    Route::post('/verify-identifiers', [ParrainageController::class, 'verifyIdentifiers'])->middleware(CorsMiddleware::class);
     Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
     Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
     Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
