@@ -163,10 +163,10 @@ class ParrainageController extends Controller
             'numElecteur' => 'required|string',
         ]);
 
-        $parrain = Parrain::with('foreigner')->where("numElecteur", "1001")->first();
+        $parrain = Parrain::with('foreigner')->where("numElecteur", $validatedData['numElecteur'])->first();
 
         $code = rand(10000, 99999);
-        Cache::put('code_verification_' . $validatedData['numElecteur'], $code, now()->addMinutes(10));
+        Cache::put('code_verification_' . $validatedData['numElecteur'], $code, now()->addMinutes(50));
         $parrain->notify(new ParrainagevalidationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));
 
         return response()->json([

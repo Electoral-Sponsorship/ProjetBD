@@ -24,7 +24,6 @@ class Candidat extends Model
         "urlPageInfo",
         "photo",
         "codeAuth",
-        "refParrainage"
     ];
 
     public function electeur() {

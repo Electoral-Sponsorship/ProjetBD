@@ -372,5 +372,3 @@ class ElecteurController extends Controller
         //
     }
 }
-
-
