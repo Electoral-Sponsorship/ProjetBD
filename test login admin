@@ -1,49 +1,55 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Toast, ToastAction } from "@/components/ui/toast";
 import { toast } from "@/hooks/use-toast";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // Ajout d'un état pour le chargement
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const response = await fetch(
-      `http://localhost:8000/api/admin/login`,
-      {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/login-admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json", // 🔥 Ajouté pour éviter l'erreur 419
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Une erreur est survenue");
       }
-    );
-    const data = await response.json();
 
-    if (!response.ok) {
-      throw new error(data.message || "Une erreur est survenue");
+      /
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.admin));
+
+      toast({
+        title: "✅ Connexion Réussie",
+        description: `Bienvenue ${data.admin.email}`,
+        variant: "success",
+      });
+
+      
+      router.push("/backoffice");
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: `❌ ${error.message}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-    // localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.admin));
-    toast({
-      title: "✅Connexion Réussie",
-      description: `Bienvenue ${data.admin.email} .`,
-      variant: "success",
-    });
-
-    // ✅ Stocker l'utilisateur dans localStorage
-    // localStorage.setItem("user", JSON.stringify(data[0]));
-
-    // 🔄 Rediriger vers le BackOffice après connexion
-    router.push("/backoffice");
   };
 
   return (
@@ -69,8 +75,8 @@ export default function Login() {
           />
           <button
             type="submit"
-            className="w-full mt-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
-            disabled={loading} // Désactiver le bouton si en cours de chargement
+            className="w-full mt-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+            disabled={loading}
           >
             {loading ? "Connexion..." : "Se connecter"}
           </button>
