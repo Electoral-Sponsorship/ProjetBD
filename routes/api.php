@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ParrainageController;
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\CandidatsController;
@@ -15,10 +16,11 @@ Route::post('/resendCode/{numeroElecteur}', [CandidatsController::class, 'resend
 Route::post('/verifyCode', [CandidatsController::class, 'verifyCode']);
 
 // 📌 Routes pour la gestion des électeurs
-Route::post('/import-electoralFile', [ElecteurController::class, 'importElectoralFile']);
-Route::post('/calculate-checksum', [ElecteurController::class, 'calculateChecksum']);
-Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoralFile']);
-Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
+    Route::post('/import-electoralFile', [ElecteurController::class, 'importElectoralFile']);
+    Route::post('/calculate-checksum', [ElecteurController::class, 'calculateChecksum']);
+    Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoralFile']);
+    Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
+
 
 // 📌 Routes pour la gestion du parrainage
 Route::middleware(CorsMiddleware::class)->group(function() {

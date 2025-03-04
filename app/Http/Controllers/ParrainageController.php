@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use function Pest\Laravel\get;
+use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isJson;
 
 class ParrainageController extends Controller
 {
@@ -26,6 +29,7 @@ class ParrainageController extends Controller
         $validator = Validator::make($request->all(), [
             'dateDebut' => 'required|date|after_or_equal:' . Carbon::now()->subMonths(6)->toDateString(),
             'dateFin' => 'required|date|after:dateDebut',
+            'idAdmin' => 'required|integer',
         ]);
 
         // Vérifier si la validation a échoué
@@ -41,7 +45,7 @@ class ParrainageController extends Controller
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
                 'etatOuverture' => true, // Etat "ouvert" est true
-                'idAdmin' => '',
+                'idAdmin' => $request->input('idAdmin'),
             ]);
 
             return response()->json([
@@ -56,30 +60,37 @@ class ParrainageController extends Controller
         }
     }
 
-    public function verifyElector(Request $request)
+    public function verifyIdentifiers(Request $request)
     {
-        $validatedData = $request->validate([
-            'numElecteur' => 'required|string',
-            'numCIN' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'numElecteur' => 'required|digits:9',
+                'numCIN' => 'required|digits:17',
+            ]);
 
-        $electeur = Electeur::where('numElecteur', $validatedData['numElecteur'])
-            ->where('numCIN', $validatedData['numCIN'])
-            ->first();
+            $electeur = Electeur::where('numElecteur', $request->input('numElecteur'))->first();
 
-        if (!$electeur) {
+
+            if (!$electeur) {
+                return response()->json([
+                    'status' => 'error',
+                    'description' => 'Les informations fournies sont incorrectes.'
+                ], 404);
+            }
+
+            return response()->json([
+                'numElecteur' => $electeur->numElecteur,
+                'nom' => $electeur->nom,
+                'prenoms' => $electeur->prenoms,
+                'dateNaissance' => $electeur->dateNaissance,
+                'bureauVote' => $electeur->bureauVote
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Les informations fournies sont incorrectes.'
-            ], 404);
+                'description' => $e->getMessage(),
+            ]);
         }
-
-        return response()->json([
-            'nom' => $electeur->nom,
-            'prenoms' => $electeur->prenoms,
-            'dateNaissance' => $electeur->dateNaissance,
-            'bureauVote' => $electeur->bureauVote ?? 'Non défini',
-        ]);
     }
 
     public function verifyAuthCode(Request $request)
@@ -90,8 +101,10 @@ class ParrainageController extends Controller
             'codeAuth' => 'required|string', // Code d'authentification
         ]);
 
+        $numElecteur = $request->input('numElecteur');
+        $codeAuth = $request->input('codeAuth');
         // Recherche du parrain par le numéro d'électeur
-        $parrain = Parrain::where('numElecteur', $validatedData['numElecteur'])
+        $parrain = Parrain::where('numElecteur', $numElecteur)
             ->first();
 
         // Vérification du parrain
@@ -103,7 +116,7 @@ class ParrainageController extends Controller
         }
 
         // Vérification du code d'authentification
-        if ($parrain->code !== $validatedData['auth_code']) {
+        if ($parrain->codeAuth != $codeAuth) {
             return response()->json([
                 'status' => 'error',
                 'description' => 'Le code d\'authentification est invalide.'
@@ -132,7 +145,8 @@ class ParrainageController extends Controller
             'status' => 'success',
             'candidats' => $candidats->map(function ($candidat) {
                 return [
-                    'nom' => $candidat->nom,
+                    'idCandidat' => $candidat->idCandidat,
+                    'nom' => $candidat->electeur->nom,
                     'parti' => $candidat->nomParti,
                     'slogan' => $candidat->slogan,
                     'couleurs' => $candidat->couleurs,
@@ -202,6 +216,57 @@ class ParrainageController extends Controller
             'status' => 'success',
             'description' => 'Parrainage effectué'
         ]);
+
+
+    }
+
+    public function trackSponsorshipProgress(Request $request)
+    {
+        $request->validate([
+            'idUser' => 'required|integer',
+            'codeAuth' => 'required|integer',
+            'email' => 'email|string',
+        ]);
+
+
+        $candidatExists = Candidat::where([
+            ['codeAuth', '=', $request->input('codeAuth')],
+            ['adresseMail', '=', $request->input('email')]
+        ])->exists();
+
+
+        if (!$candidatExists) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Cette candidat est introuvable.'
+            ]);
+        };
+
+        $id = $request->input('idUser');
+        $parrainages = Parrainage::where('idCandidat', $id)->get();  // Utilise get() pour récupérer les résultats
+
+        if ($parrainages->isEmpty()) {  // Vérifie si la collection est vide
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Désolé vous n\'avez aucun parrainage disponible.'
+            ]);
+        } else {
+            $electeurs = [];
+
+
+            foreach ($parrainages as $parrainnage) {
+                $idparrain = $parrainnage->idParrain;
+                $parrain = Parrain::where('idParrain', $idparrain)->get()->first();
+                $electeur = $parrain->foreigner;
+                $electeurs[] = [
+                    'numElecteur' => $electeur->numElecteur,
+                    'nom' => $electeur->nom,
+                    'prenoms' => $electeur->prenoms,
+                    'sexe' => $electeur->sexe,
+                ];
+            }
+            return response()->json($electeurs);  // Retourne les parrainages si disponibles
+        }
 
 
     }
