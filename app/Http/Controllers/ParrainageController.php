@@ -79,6 +79,7 @@ class ParrainageController extends Controller
             }
 
             return response()->json([
+                'numElecteur' => $electeur->numElecteur,
                 'nom' => $electeur->nom,
                 'prenoms' => $electeur->prenoms,
                 'dateNaissance' => $electeur->dateNaissance,
@@ -100,8 +101,10 @@ class ParrainageController extends Controller
             'codeAuth' => 'required|string', // Code d'authentification
         ]);
 
+        $numElecteur = $request->input('numElecteur');
+        $codeAuth = $request->input('codeAuth');
         // Recherche du parrain par le numéro d'électeur
-        $parrain = Parrain::where('numElecteur', $validatedData['numElecteur'])
+        $parrain = Parrain::where('numElecteur', $numElecteur)
             ->first();
 
         // Vérification du parrain
@@ -113,7 +116,7 @@ class ParrainageController extends Controller
         }
 
         // Vérification du code d'authentification
-        if ($parrain->code !== $validatedData['auth_code']) {
+        if ($parrain->codeAuth != $codeAuth) {
             return response()->json([
                 'status' => 'error',
                 'description' => 'Le code d\'authentification est invalide.'
@@ -142,7 +145,8 @@ class ParrainageController extends Controller
             'status' => 'success',
             'candidats' => $candidats->map(function ($candidat) {
                 return [
-                    'nom' => $candidat->nom,
+                    'idCandidat' => $candidat->idCandidat,
+                    'nom' => $candidat->electeur->nom,
                     'parti' => $candidat->nomParti,
                     'slogan' => $candidat->slogan,
                     'couleurs' => $candidat->couleurs,
