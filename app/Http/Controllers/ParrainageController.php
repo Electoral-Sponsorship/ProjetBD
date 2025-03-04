@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use function Pest\Laravel\get;
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isJson;
 
@@ -61,28 +62,34 @@ class ParrainageController extends Controller
 
     public function verifyIdentifiers(Request $request)
     {
-        $validatedData = $request->validate([
-            'numElecteur' => 'required|string',
-            'numCIN' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'numElecteur' => 'required|digits:9',
+                'numCIN' => 'required|digits:17',
+            ]);
 
-        $electeur = Electeur::where('numElecteur', $validatedData['numElecteur'])
-            ->where('numCIN', $validatedData['numCIN'])
-            ->first();
+            $electeur = Electeur::where('numElecteur', $request->input('numElecteur'))->first();
 
-        if (!$electeur) {
+
+            if (!$electeur) {
+                return response()->json([
+                    'status' => 'error',
+                    'description' => 'Les informations fournies sont incorrectes.'
+                ], 404);
+            }
+
+            return response()->json([
+                'nom' => $electeur->nom,
+                'prenoms' => $electeur->prenoms,
+                'dateNaissance' => $electeur->dateNaissance,
+                'bureauVote' => $electeur->bureauVote
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Les informations fournies sont incorrectes.'
-            ], 404);
+                'description' => $e->getMessage(),
+            ]);
         }
-
-        return response()->json([
-            'nom' => $electeur->nom,
-            'prenoms' => $electeur->prenoms,
-            'dateNaissance' => $electeur->dateNaissance,
-            'bureauVote' => $electeur->bureauVote ?? 'Non défini',
-        ]);
     }
 
     public function verifyAuthCode(Request $request)
@@ -224,7 +231,7 @@ class ParrainageController extends Controller
         ])->exists();
 
 
-        if(!$candidatExists){
+        if (!$candidatExists) {
             return response()->json([
                 'status' => 'error',
                 'description' => 'Cette candidat est introuvable.'

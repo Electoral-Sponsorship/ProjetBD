@@ -21,7 +21,7 @@ Route::post('/verifyCode', [CandidatsController::class, 'verifyCode']);
 
 
 // 📌 Routes pour la gestion du parrainage
-Route::prefix('parrainage')->group(function () {
+Route::middleware(\App\Http\Middleware\CorsMiddleware::class)->group(function () {
     Route::post('/set-sponsorship-period', [ParrainageController::class, 'setSponsorshipPeriod']);
     Route::post('/verify-identifiers', [ParrainageController::class, 'verifyIdentifiers']);
     Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
