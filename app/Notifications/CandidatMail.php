@@ -44,7 +44,7 @@ class CandidatMail extends Notification
             ->greeting('Bonjour ' . $this->prenom . ' ' . $this->nom)
             ->line('Votre inscription a été  validée avec succès.')
             ->line('**Voici votre code de sécurite : ' . $this->code . '**')
-            ->line('Ce code est valable pendant 10 minutes. Passé ce délai, vous devrez en demander un nouveau.')
+            ->line('Ce code est valable pendant 50 minutes. Passé ce délai, vous devrez en demander un nouveau.')
             ->line('Veuillez utiliser ce code pour accéder à votre espace candidat.')
             ->line('Merci d\'utiliser notre application!')
             ->salutation('Cordialement, L\'équipe Gestion Parrainage.');

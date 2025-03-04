@@ -105,7 +105,7 @@ class CandidatsController extends Controller
             'photo' => $request->photo
         ]);
         $codeAuth = $this->generateCode();
-        Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(10));
+        Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(50));
         $candidat->notify(new CandidatMail($codeAuth, $electeur->prenoms, $electeur->nom));
         return response()->json([
             'message' => 'Candidat enregistre avec succes. Un code de securite a ete envoye par e-mail',
@@ -121,7 +121,7 @@ class CandidatsController extends Controller
             ], 400);
         }
         $codeAuth = $this->generateCode();
-        Cache::put('code_verification_' . $numeroElecteur, $codeAuth, now()->addMinutes(10));
+        Cache::put('code_verification_' . $numeroElecteur, $codeAuth, now()->addMinutes(50));
         $candidat->notify(new CandidatMail($codeAuth, $candidat->electeur->prenoms, $candidat->electeur->nom));
         return response()->json([
             'message' => 'Le nouveau code de securite a ete envoye par e-mail',

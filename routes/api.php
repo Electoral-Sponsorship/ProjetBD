@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\CandidatsController;
 use App\Http\Controllers\AdministrateurController;
+use App\Http\Middleware\CorsMiddleware;
 
 // 📌 Routes pour les candidats
 Route::apiResource('/candidats', CandidatsController::class);
@@ -20,11 +21,17 @@ Route::post('/check-electoral-file', [ElecteurController::class, 'checkElectoral
 Route::post('/validate-import', [ElecteurController::class, 'validateImport']);
 
 // 📌 Routes pour la gestion du parrainage
-Route::post('/set-sponsorship-period',[ParrainageController::class, 'setSponsorshipPeriod']);
-Route::post('/verify-elector', [ParrainageController::class, 'verifyElector']);
-Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
-Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
-Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
+Route::middleware(CorsMiddleware::class)->group(function() {
+    Route::prefix('parrainage')->group(function () {
+        Route::post('/set-sponsorship-period', [ParrainageController::class, 'setSponsorshipPeriod']);
+        Route::post('/verify-identifiers', [ParrainageController::class, 'verifyIdentifiers']);
+        Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
+        Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
+        Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
+        Route::post('/track-progress', [ParrainageController::class, 'trackSponsorshipProgress']);
+    });
+});
+
 
 // 📌 Routes d'authentification de l'administrateur
 Route::prefix('admin')->group(function () {
