@@ -7,6 +7,7 @@ use App\Models\ElecteurTemporaire;
 use App\Models\Historisation;
 use App\Models\Parrainage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Validator;
@@ -175,7 +176,8 @@ class ElecteurController extends Controller
                     'prenoms' => $record['prenoms'],
                     'dateNaissance' => $record['dateNaissance'],
                     'lieuNaissance' => $record['lieuNaissance'],
-                    'sexe' => $record['sexe']
+                    'sexe' => $record['sexe'],
+                    'bureauVote' => $record['bureauVote'],
                 ]);
             }
             return response()->json([
@@ -188,7 +190,7 @@ class ElecteurController extends Controller
             self::$EtatUploadElecteurs = false;
             return response()->json([
                 'status' => 'error',
-                'description' => "Impossible d'insérer les données",
+                'description' => "Impossible d'insérer les données"  . $e->getMessage(),
                 'message' => $e->getMessage(),
             ]);
         }
@@ -214,7 +216,8 @@ class ElecteurController extends Controller
                 'prenoms' => $record['prenoms'],
                 'dateNaissance' => $record['dateNaissance'],
                 'lieuNaissance' => $record['lieuNaissance'],
-                'sexe' => $record['sexe']
+                'sexe' => $record['sexe'],
+                'bureauVote' => $record['bureauVote'],
             ]);
             $validator = Validator::make($values, [
                 'numElecteur' => 'required|digits:9',
@@ -222,20 +225,21 @@ class ElecteurController extends Controller
                 'nom' => [
                     'required',
                     'string',
-                    'regex:/^[A-Z][a-z\'\-]*$|^[A-Z]+(\-[A-Z]+)*$|^[A-Z][a-z\'\-]*[A-Z]+$/'
+                    'regex:/^([A-Z]+([A-Z\'-]+)*)$|^([A-Z][a-z\'-]+)*$/'
                 ],
                 'prenoms' => [
                     'required',
                     'string',
-                    'regex:/^[A-Z][a-z\'\-]*$|^[A-Z]+(\-[A-Z]+)*$|^[A-Z][a-z\'\-]*[A-Z]+$/'
+                    'regex:/^([A-Z][a-zA-Z\'-]+)(\s[A-Z][a-zA-Z\'-]+)*$/'
                 ],
-                'dateNaissance' => 'required|date_format:d-m-Y',
+                'dateNaissance' => 'required|date_format:Y-m-d',
                 'lieuNaissance' => [
                     'required',
                     'string',
-                    'regex:/^[A-Za-z0-9\s\'\-]+$/',
+                    'regex:/^[A-Za-zÀ-ÿ0-9\s\'\-]+$/'
                 ],
-                'sexe' => ['required', Rule::in(['Masculin', 'Feminin'])]
+                'sexe' => ['required', Rule::in(['Masculin', 'Feminin'])],
+                'bureauVote' => ['required', 'string']
             ]);
 
             if ($validator->fails()) {
@@ -293,7 +297,9 @@ class ElecteurController extends Controller
                     'dateNaissance' => $electeurTemp->dateNaissance,
                     'lieuNaissance' => $electeurTemp->lieuNaissance,
                     'sexe' => $electeurTemp->sexe,
+                    'bureauVote' => $electeurTemp->bureauVote
                 ]);
+//                dd(Electeur::all());
             }
 
             // Supprimer toutes les données de la table temporaire après transfert
@@ -302,19 +308,21 @@ class ElecteurController extends Controller
             // Commit de la transaction si tout s'est bien passé
             DB::commit();
 
-            return response()->json([
-                'status' => 'success',
-                'description' => 'Données transférées avec succès de la table temporaire vers la table persistante.'
-            ]);
         } catch (\Exception $e) {
             self::$EtatUploadElecteurs = false;
+            if ($e->getMessage() == "There is no active transaction") {
+                return response()->json([
+                    'status' => 'success',
+                    'description' => 'Données transférées avec succès de la table temporaire vers la table persistante.'
+                ], 201);
+            }
             // Si une erreur survient, rollback de la transaction
             DB::rollBack();
 
             return response()->json([
                 'status' => 'error',
                 'description' => 'Erreur lors du transfert des données: ' . $e->getMessage()
-            ]);
+            ], 400);
         }
 
     }
