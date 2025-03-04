@@ -28,6 +28,7 @@ class ParrainageController extends Controller
         $validator = Validator::make($request->all(), [
             'dateDebut' => 'required|date|after_or_equal:' . Carbon::now()->subMonths(6)->toDateString(),
             'dateFin' => 'required|date|after:dateDebut',
+            'idAdmin' => 'required|integer',
         ]);
 
         // Vérifier si la validation a échoué
@@ -43,7 +44,7 @@ class ParrainageController extends Controller
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
                 'etatOuverture' => true, // Etat "ouvert" est true
-                'idAdmin' => '',
+                'idAdmin' => $request->input('idAdmin'),
             ]);
 
             return response()->json([
