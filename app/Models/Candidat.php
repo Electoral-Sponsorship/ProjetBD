@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class Candidat extends Model
 {
     //
-    
+
     use Notifiable;
     protected $primaryKey = 'idCandidat';
     public $timestamps = false;
@@ -30,10 +30,6 @@ class Candidat extends Model
         return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
     }
 
-    public function foreigner()
-    {
-        return $this->belongsTo(Parrain::class, 'refParrainage', 'codevalidation');
-    }
     public function routeNotificationForMail($notification){
         return $this->adresseMail;
 
