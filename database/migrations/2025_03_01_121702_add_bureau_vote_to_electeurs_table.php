@@ -11,20 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-<<<<<<< HEAD:database/migrations/2025_02_12_115732_create_parrainages.php
-        Schema::create('parrainages', function (Blueprint $table) {
-            $table->id('idParrainage'); // Clé primaire
-            $table->unsignedBigInteger('idParrain'); // Clé étrangère vers parrains
-            $table->date('dateParrainage')->nullable();
-            $table->timestamps();
-
-            // Définition des relations
-            $table->foreign('idParrain')->references('idParrain')->on('parrains')->onDelete('cascade');
-=======
+<<<<<<<< HEAD:database/migrations/2025_03_02_111827_add_authentification_code.php
+        Schema::table('candidats', function (Blueprint $table) {
+            $table->integer('codeAuth')->nullable()->after('photo');
+========
         Schema::table('electeurs', function (Blueprint $table) {
             //
             $table->string('bureauVote')->nullable();
->>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4:database/migrations/2025_03_01_121702_add_bureau_vote_to_electeurs_table.php
+>>>>>>>> 5a24a737bcd1b95b25f4943eeb91bb18cfac12cf:database/migrations/2025_03_01_121702_add_bureau_vote_to_electeurs_table.php
         });
     }
 
@@ -33,15 +27,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-<<<<<<< HEAD:database/migrations/2025_02_12_115732_create_parrainages.php
-        Schema::dropIfExists('parrainages');
-=======
+<<<<<<<< HEAD:database/migrations/2025_03_02_111827_add_authentification_code.php
+        Schema::table('candidats', function (Blueprint $table) {
+            $table->dropColumn('codeAuth');
+========
         Schema::table('electeurs', function (Blueprint $table) {
             //
             $table->dropColumn('bureauVote');
+>>>>>>>> 5a24a737bcd1b95b25f4943eeb91bb18cfac12cf:database/migrations/2025_03_01_121702_add_bureau_vote_to_electeurs_table.php
         });
->>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4:database/migrations/2025_03_01_121702_add_bureau_vote_to_electeurs_table.php
     }
 };
-
-
