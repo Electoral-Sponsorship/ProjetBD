@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidat;
 use App\Models\Electeur;
+use App\Models\GestionParrainage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Notifications\CandidatMail;
@@ -66,53 +67,58 @@ class CandidatsController extends Controller
     }
 
     public function register(Request $request) {
-        $request->validate([
-            'numeroElecteur' => 'required|string',
-            'telephone' => 'required|string',
-            'email' => 'required|email',
-            'parti' => 'required|string',
-            'slogan' => 'required|string',
-            'couleurs' => 'required|string',
-            'urlInfo' => 'required|url',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-        $electeur = Electeur::where('numElecteur', '=', $request->numeroElecteur)->first();
-        if(!$electeur) {
+        if(GestionParrainage::where('etatOuverture', '=', '0')->exists()) {
             return response()->json([
-                'message' => 'Cet electeur n\'existe pas' 
-            ],400);
-        }
-        $candidat = Candidat::where('numElecteur', '=', $request->numeroElecteur)->first();
-        if($candidat) {
+                'message' => "La période de parrainage a débuté, vous ne pouvez plus vous enregistrer"
+            ], 400);
+        } else {
+            $request->validate([
+                'numeroElecteur' => 'required|string',
+                'telephone' => 'required|string',
+                'email' => 'required|email',
+                'parti' => 'required|string',
+                'slogan' => 'required|string',
+                'couleurs' => 'required|string',
+                'urlInfo' => 'required|url',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+            $electeur = Electeur::where('numElecteur', '=', $request->numeroElecteur)->first();
+                if(!$electeur) {
+                    return response()->json([
+                        'message' => 'Cet electeur n\'existe pas' 
+                    ],400);
+                }
+            $candidat = Candidat::where('numElecteur', '=', $request->numeroElecteur)->first();
+            if($candidat) {
+                return response()->json([
+                    'message' => 'Ce candidat existe deja.',
+                ],400);
+            }
+            if (Candidat::where('adresseMail', '=', $request->email)->exists()) {
+                return response()->json([
+                    'message' => 'Cet email est déjà utilisé par un autre candidat.',
+                ],400);
+            }
+            $candidat = Candidat::create([
+                'numElecteur' => $request->numeroElecteur,
+                'numTel' => $request->telephone,
+                'adresseMail' => $request->email,
+                'nomParti' => $request->parti,
+                'slogan' => $request->slogan,
+                'couleurs' =>  $request->couleurs,
+                'urlPageInfo' => $request->urlInfo,
+                'photo' => $request->photo
+            ]);
+            $codeAuth = $this->generateCode();
+            Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(50));
+            $candidat->notify(new CandidatMail($codeAuth, $electeur->prenoms, $electeur->nom));
             return response()->json([
-                'message' => 'Ce candidat existe deja.',
-            ],400);
-               
+                'message' => 'Candidat enregistre avec succes. Un code de securite a ete envoye par e-mail',
+                'candidat' => $candidat 
+            ], 201);
         }
-        if (Candidat::where('adresseMail', '=', $request->email)->exists()) {
-            return response()->json([
-                'message' => 'Cet email est déjà utilisé par un autre candidat.',
-            ],400);
-        }
-        $candidat = Candidat::create([
-            'numElecteur' => $request->numeroElecteur,
-            'numTel' => $request->telephone,
-            'adresseMail' => $request->email,
-            'nomParti' => $request->parti,
-            'slogan' => $request->slogan,
-            'couleurs' =>  $request->couleurs,
-            'urlPageInfo' => $request->urlInfo,
-            'photo' => $request->photo
-        ]);
-        $codeAuth = $this->generateCode();
-        Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(50));
-        $candidat->notify(new CandidatMail($codeAuth, $electeur->prenoms, $electeur->nom));
-        return response()->json([
-            'message' => 'Candidat enregistre avec succes. Un code de securite a ete envoye par e-mail',
-            'candidat' => $candidat 
-        ], 201);
     }
-
+    
     public function resendCode($numeroElecteur) {
         $candidat = Candidat::with('electeur')->where('numElecteur', '=', $numeroElecteur)->first();
         if (!$candidat) {
