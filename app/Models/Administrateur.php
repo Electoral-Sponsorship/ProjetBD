@@ -6,15 +6,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Administrateur extends Authenticatable
-{
+class Administrateur extends Authenticatable{
     use HasApiTokens, Notifiable;
-
-    protected $table = 'administrateurs'; // Spécifie la table
-
-    protected $primaryKey = 'idAdmin'; // Définition de la clé primaire
-
-    public $timestamps = false; // Désactiver timestamps si non utilisés
+    protected $primaryKey = 'idAdmin';
+    public $timestamps = false;
 
     protected $fillable = [
         "adresseMail",

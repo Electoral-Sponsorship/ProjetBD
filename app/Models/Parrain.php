@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Parrain extends Model
@@ -17,10 +18,19 @@ class Parrain extends Model
     protected $primaryKey = 'idParrain';
 
     // Timestamps
+=======
+use Illuminate\Notifications\Notifiable;
+
+class Parrain extends Model
+{
+    //
+    use Notifiable;
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
     public $timestamps = false;
 
     // Colonnes remplissables
     protected $fillable = [
+<<<<<<< HEAD
         'numElecteur',
         'numBureauVote',
         'dateParrainage',
@@ -53,6 +63,25 @@ class Parrain extends Model
             'idGestion'  // Clé locale dans Parrainage
         );
     }
+=======
+        "idParrain",
+        "numElecteur",
+        "dateParrainage",
+        "numTel",
+        "adresseMail",
+        "codevalidation"
+    ];
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->adresseMail;
+    }
+
+    public function foreigner() {
+        return $this->belongsTo(Electeur::class, 'numElecteur', 'numElecteur');
+    }
+
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
 }
 
 

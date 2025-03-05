@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Parrainage extends Model
 {
+<<<<<<< HEAD
     use HasFactory;
 
     protected $table = 'parrainages'; // Définition du nom de la table
@@ -16,6 +17,16 @@ class Parrainage extends Model
     protected $fillable = [
         'idParrain',
         'dateParrainage',
+=======
+    //
+    protected $table = 'parrainages';
+    public $timestamps = false;
+    protected $fillable =[
+        "dateDebut",
+        "dateFin",
+        "etatOuverture",
+        "idAdmin"
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
     ];
 
     /**

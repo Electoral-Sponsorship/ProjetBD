@@ -26,8 +26,13 @@ class Electeur extends Model
         "prenoms",
         "dateNaissance",
         "lieuNaissance",
+<<<<<<< HEAD
         "sexe" ,
          "numBureauVote"
+=======
+        "sexe",
+        "bureauVote"
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
     ];
 
     // Relation avec la table `parrains`

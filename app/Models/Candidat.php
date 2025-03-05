@@ -11,6 +11,7 @@ class Candidat extends Model
     //
 
     use Notifiable;
+    protected $primaryKey = 'idCandidat';
     public $timestamps = false;
     protected $fillable = [
         "idCandidat",
@@ -20,7 +21,9 @@ class Candidat extends Model
         "nomParti",
         "slogan",
         "couleurs",
-        "urlPageInfo"
+        "urlPageInfo",
+        "photo",
+        "codeAuth",
     ];
 
     public function electeur() {
@@ -29,6 +32,7 @@ class Candidat extends Model
 
     public function routeNotificationForMail($notification){
         return $this->adresseMail;
+
     }
 }
 

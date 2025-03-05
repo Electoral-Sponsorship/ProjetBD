@@ -7,21 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CandidatMail extends Notification
+class ParrainageVerificationMail extends Notification
 {
+    private $code;
+    private $nom;
+    private $prenoms;
     use Queueable;
-
-    public $code;
-    public $prenom;
-    public $nom;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($code, $prenom, $nom){
+    public function __construct($code, $nom, $prenoms)
+    {
+        //
         $this->code = $code;
-        $this->prenom = $prenom;
         $this->nom = $nom;
+        $this->prenoms = $prenoms;
     }
 
     /**
@@ -37,17 +38,14 @@ class CandidatMail extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage{
+    public function toMail(object $notifiable): MailMessage
+    {
         return (new MailMessage)
             ->from('noreply@gestion-parrainage.sn', 'gestion-parraingage')
-            ->subject('Votre code de securite')
-            ->greeting('Bonjour ' . $this->prenom . ' ' . $this->nom)
-            ->line('Votre inscription a été  validée avec succès.')
-            ->line('**Voici votre code de sécurite : ' . $this->code . '**')
-            ->line('Ce code est valable pendant 50 minutes. Passé ce délai, vous devrez en demander un nouveau.')
-            ->line('Veuillez utiliser ce code pour accéder à votre espace candidat.')
-            ->line('Merci d\'utiliser notre application!')
-            ->salutation('Cordialement, L\'équipe Gestion Parrainage.');
+            ->subject('Code de vérification de parrainage')
+            ->line('Bonjour ' . $this->nom . ' ' . $this->prenoms)
+            ->line('Vous avez effectué avec succès votre parrainge.')
+            ->line("Votre code de vérification est: " . $this->code);
     }
 
     /**
