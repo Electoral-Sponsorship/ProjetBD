@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('parrainages', function (Blueprint $table) {
-            //
+        Schema::create('parrainages', function (Blueprint $table) {
+            $table->id('idParrainage'); // Clé primaire
+            $table->unsignedBigInteger('idParrain'); // Clé étrangère vers parrains
+            $table->date('dateParrainage')->nullable();
+            $table->timestamps();
+
+            // Définition des relations
+            $table->foreign('idParrain')->references('idParrain')->on('parrains')->onDelete('cascade');
         });
     }
 
@@ -21,8 +27,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('parrainages', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('parrainages');
     }
 };
+
+

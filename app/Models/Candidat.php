@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class Candidat extends Model
 {
     //
-    
+
     use Notifiable;
     public $timestamps = false;
     protected $fillable = [
@@ -31,3 +31,5 @@ class Candidat extends Model
         return $this->adresseMail;
     }
 }
+
+
