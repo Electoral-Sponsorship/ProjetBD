@@ -21,7 +21,7 @@ export default function BackOfficeHome() {
         <ul className="space-y-4">
           <li><a href="/backoffice/dashboard" className="text-green-500 hover:underline">Tableau de Bord</a></li>
           <li><a href="/backoffice/ListElector" className="text-green-500 hover:underline">Importer Liste Électeurs</a></li>
-          <li><a href="/backoffice/candidates" className="text-green-500 hover:underline">Saisie des Candidats</a></li>
+          <li><a href="/InfCandidat" className="text-green-500 hover:underline">Saisie des Candidats</a></li>
           <li><a href="/backoffice/set-sponsorship-period" className="text-green-500 hover:underline">Ouvrir/Fermer Période de Parrainage</a></li>
         </ul>
       </div>

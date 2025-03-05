@@ -10,7 +10,7 @@ export default function ListeCandidats() {
 
   // Charger la liste des candidats depuis le backend ou json-server
   useEffect(() => {
-    fetch("http://localhost:5000/candidats") // 🔹 À modifier selon l'API backend
+    fetch("http://localhost:8000/api/candidats") // 🔹 À modifier selon l'API backend
       .then((res) => res.json())
       .then((data) => setCandidats(data))
       .catch(() => toast({ title: "Erreur", description: "Impossible de charger les candidats", variant: "destructive" }));
@@ -21,14 +21,36 @@ export default function ListeCandidats() {
     setSelectedCandidat(candidat);
   };
 
-  // Générer un nouveau code d'authentification
-  const genererCode = () => {
-    toast({
-      title: "Nouveau Code Généré",
-      description: `✅ Un nouveau code a été envoyé à ${selectedCandidat?.email}.`,
+  const genererCode = async () => {
+    if (!selectedCandidat) {
+      toast({ title: "Erreur", description: "Aucun candidat sélectionné", variant: "destructive" });
+      return;
+    }
+  
+    // Envoi de la requête POST à Laravel
+    const response = await fetch(`http://localhost:8000/api/resendCode/${selectedCandidat.numElecteur}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+  
+    const data = await response.json();
+  
+    if (response.ok) {
+      toast({
+        title: "Succès",
+        description:`✅ ${data.message} a l'\adresse ${selectedCandidat.email}`, 
+      });
+    } else {
+      toast({
+        title: "Erreur",
+        description:`❌${data.message}`,
+        variant: "destructive",
+      });
+    }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-lg">
@@ -39,7 +61,7 @@ export default function ListeCandidats() {
           {candidats.length > 0 ? (
             <ul className="space-y-4">
               {candidats.map((candidat) => (
-                <li key={candidat.id} className="p-4 bg-gray-50 rounded-lg flex justify-between items-center">
+                <li key={candidat.idCandidat} className="p-4 bg-gray-50 rounded-lg flex justify-between items-center">
                  <CircleUserRound /> <span>{candidat.nom} {candidat.prenom}</span>
                   <button onClick={() => voirDetails(candidat)} className="text-blue-600 hover:text-blue-800 flex items-center">
                     <Eye className="mr-2" /> Voir Détails

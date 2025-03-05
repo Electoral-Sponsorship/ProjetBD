@@ -16,10 +16,10 @@ export default function CandidatForm() {
     slogan: "",
     couleurs: "",
     urlInfo: "",
+    numeroElecteur: "",
     photo: null,
   });
-/* l'api du backend ? j'en ai aucune idee 
-const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur}`); */
+ 
   const verifierCandidat = async () => {
     setError(""); 
     setCandidatInfo(null);
@@ -29,26 +29,32 @@ const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur
       method: "POST",
       body: form,
     }); */
-
-    const response = await fetch(`http://localhost:5000/candidats?numeroElecteur=${numeroElecteur}`);
+    
+    const response = await fetch(`http://localhost:8000/api/verify/${numeroElecteur}`);
     const data = await response.json();
 
-    if (data.length === 0) {
+    if (!response.ok) {
         toast({
             title: "Erreur",
-            description: "❌ Le candidat considéré n’est pas présent dans le fichier électoral.",
-            action: <ToastAction altText="Try again">"Veuillez Réessayer"</ToastAction>,
+            description:`❌ ${data.message}`,
+            variant: "destructive",
           });
           return;
     }
 
     toast({
         title: "Candidat trouvé",
-        description: `✅ ${data[0].nom} ${data[0].prenom} est éligible.`,
+        description: `✅ ${data.candidat.nom} ${data.candidat.prenom} est éligible.`,
         variant: "success",
       });
 
-    setCandidatInfo(data[0]); 
+    setCandidatInfo(data.candidat); 
+    setFormData((prev) => ({
+      ...prev,
+      numeroElecteur: numeroElecteur || null, 
+  }));
+  
+
   };
 
   const handleChange = (e) => {
@@ -62,27 +68,38 @@ const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newCandidat = {
-      numeroElecteur,
-      ...formData,
-      photo: formData.photo ? formData.photo.name : "",
-    };
+  
+    const formDataToSend = new FormData();
+    formDataToSend.append("numeroElecteur", formData.numeroElecteur);
+    formDataToSend.append("telephone", formData.telephone);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("parti", formData.parti);
+    formDataToSend.append("slogan", formData.slogan);
+    formDataToSend.append("couleurs", formData.couleurs);
+    formDataToSend.append("urlInfo", formData.urlInfo);
+    if (formData.photo) {
+      formDataToSend.append("photo", formData.photo);
+    }
 
-    const response = await fetch("http://localhost:5000/candidats", {
+    const response = await fetch("http://localhost:8000/api/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCandidat),
+      body: formDataToSend,
     });
+    const data = await response.json();
 
     if (response.ok) {
       toast({
         title: "Informations enregistrées",
-        description: `✅Vos informations ont été enregistrées avec succès`,
+        description:`✅ ${data.message}`,
         variant: "success",
       });
 
     } else {
-      alert("❌ Erreur lors de l’enregistrement !");
+      toast({
+        title: "Erreur",
+        description:`❌${data.message}`,
+        variant: "destructive",
+      });
     }
   };
 
@@ -115,7 +132,7 @@ const response = await fetch(`https://api.exemple.com/candidats/${numeroElecteur
         {candidatInfo && (
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <p className="text-green-600 font-bold text-lg text-center">
-              ✅ {candidatInfo.nom} {candidatInfo.prenom} ({candidatInfo.date_naissance})
+              ✅ {candidatInfo.nom} {candidatInfo.prenom} ({candidatInfo.ddn})
             </p>
 
             <div>
