@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
+use App\Http\Requests\StoreParrainageRequest;
+use App\Models\Parrainage;
+use Illuminate\Http\Request;
+=======
 use App\Models\Candidat;
 use App\Models\Electeur;
 use App\Models\GestionParrainage;
@@ -17,14 +22,31 @@ use Illuminate\Support\Facades\Validator;
 use function Pest\Laravel\get;
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isJson;
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
 
 class ParrainageController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Enregistrer un parrainage.
      */
-    public function setSponsorshipPeriod(Request $request)
+    public function store(StoreParrainageRequest $request)
     {
+<<<<<<< HEAD
+        $parrainage = Parrainage::create([
+            'idParrain' => $request->idParrain,
+            'dateParrainage' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Parrainage enregistré avec succès.',
+            'data' => $parrainage
+        ], 201);
+    }
+
+    /**
+     * Lister tous les parrainages.
+     */
+=======
         // Validation des dates
         $validator = Validator::make($request->all(), [
             'dateDebut' => 'required|date|after_or_equal:' . Carbon::now()->subMonths(6)->toDateString(),
@@ -271,40 +293,12 @@ class ParrainageController extends Controller
 
     }
 
+>>>>>>> f25ae85dd09d04d99590df3bd4b700afbc9136b4
     public function index()
     {
-        //
-    }
+        $parrainages = Parrainage::with('parrain')->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json($parrainages);
     }
 }
+

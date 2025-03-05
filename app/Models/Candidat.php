@@ -35,3 +35,5 @@ class Candidat extends Model
 
     }
 }
+
+
