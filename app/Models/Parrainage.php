@@ -4,15 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Parrainage extends Model
-{
+class Parrainage extends Model {
     //
     protected $table = 'parrainages';
     public $timestamps = false;
     protected $fillable =[
-        "dateDebut",
-        "dateFin",
-        "etatOuverture",
-        "idAdmin"
+        "idCandidat",
+        "idParrain"
     ];
 }

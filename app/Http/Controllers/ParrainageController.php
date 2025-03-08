@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Requests\StoreParrainageRequest;
 use App\Models\Candidat;
 use App\Models\Electeur;
 use App\Models\GestionParrainage;
@@ -18,9 +20,31 @@ use function Pest\Laravel\get;
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isJson;
 
-class ParrainageController extends Controller
-{
+
+class ParrainageController extends Controller {
     /**
+     * Enregistrer un parrainage.
+     */
+    // public function store(StoreParrainageRequest $request) {
+
+    //     $parrainage = Parrainage::create([
+    //         'idParrain' => $request->idParrain,
+    //         'dateParrainage' => now(),
+    //     ]);
+
+    //     return response()->json([
+    //         'message' => 'Parrainage enregistré avec succès.',
+    //         'data' => $parrainage
+    //     ], 201);
+    // } 
+
+    public function index() {
+        $parrainages = Parrainage::with('parrain')->get();
+
+        return response()->json($parrainages);
+    }
+
+     /**
      * Display a listing of the resource.
      */
     public function setSponsorshipPeriod(Request $request)
@@ -116,7 +140,7 @@ class ParrainageController extends Controller
         }
 
         // Vérification du code d'authentification
-        if ($parrain->codeAuth != $codeAuth) {
+        if ($parrain->codeAuthentification != $codeAuth) {
             return response()->json([
                 'status' => 'error',
                 'description' => 'Le code d\'authentification est invalide.'
@@ -270,12 +294,7 @@ class ParrainageController extends Controller
 
 
     }
-
-    public function index()
-    {
-        //
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -308,3 +327,4 @@ class ParrainageController extends Controller
         //
     }
 }
+

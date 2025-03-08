@@ -225,7 +225,7 @@ class ElecteurController extends Controller
                 'nom' => [
                     'required',
                     'string',
-                    'regex:/^([A-Z]+([A-Z\'-]+)*)$|^([A-Z][a-z\'-]+)*$/'
+                    'regex:/^([A-Z]+([A-Z\'-]+))$|^([A-Z][a-z\'-]+)$/'
                 ],
                 'prenoms' => [
                     'required',
