@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('parrains', function (Blueprint $table) {
-            //
+        Schema::table('parrainages', function (Blueprint $table) {
+            $table->date('dateParrainage')->nullable()->after('idCandidat');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('parrains', function (Blueprint $table) {
-            //
+        Schema::table('parrainages', function (Blueprint $table) {
+            $table->dropColumn('dateParrainage');
         });
     }
 };

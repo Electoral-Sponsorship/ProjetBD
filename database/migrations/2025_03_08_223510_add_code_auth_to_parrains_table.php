@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('electeurs', function (Blueprint $table) {
-            //
-            $table->string('bureauVote')->nullable();
+        Schema::table('parrains', function (Blueprint $table) {
+            $table->string('codeAuthentification')->nullable()->after('adresseMail');
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('electeurs', function (Blueprint $table) {
-            //
-            $table->dropColumn('bureauVote');
-    });
+        Schema::table('parrains', function (Blueprint $table) {
+            $table->dropColumn('codeAuthentification');
+        });
     }
 };

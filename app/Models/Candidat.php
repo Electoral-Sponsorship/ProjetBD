@@ -6,8 +6,7 @@ use App\Models\Electeur;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class Candidat extends Model
-{
+class Candidat extends Model {
     //
 
     use Notifiable;
@@ -35,3 +34,5 @@ class Candidat extends Model
 
     }
 }
+
+
