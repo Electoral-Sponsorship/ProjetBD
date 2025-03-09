@@ -1,58 +1,97 @@
-// app/backoffice/set-sponsorship-period/page.js
 "use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
-import React, { useState } from "react";
+export default function SetSponsorshipPeriod() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [dateDebut, setDateDebut] = useState("");
+  const [dateFin, setDateFin] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-const SetSponsorshipPeriod = () => {
-  const [dates, setDates] = useState({ startDate: "", endDate: "" });
-  const [message, setMessage] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const handleSubmit = async () => {
     try {
-      const response = await fetch("/api/set-sponsorship-period", {
+      const response = await fetch("http://localhost:8000/api/parrainage/set-sponsorship-period", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dates),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dateDebut,
+          dateFin,
+          idAdmin: 1, // Remplace par l'ID de l'admin connecté
+        }),
       });
 
       const data = await response.json();
-      setMessage(data.message);
+
+      if (response.ok) {
+        toast({
+          title: "Succès",
+          description: "✅ La période de parrainage a été définie avec succès.",
+          variant: "success",
+        });
+        router.push("/backoffice/dashboard"); // Redirige vers le tableau de bord
+      } else {
+        toast({
+          title: "Erreur",
+          description: `❌ ${data.description}`,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      setMessage("Une erreur est survenue.");
+      toast({
+        title: "Erreur",
+        description: "❌ Une erreur s'est produite lors de la définition de la période de parrainage.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded">
-      <h1 className="text-2xl font-bold mb-4">Ouvrir/Fermer Période de Parrainage</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4 text-gray-950">
-          <label className="block font-bold mb-2">Date de Début :</label>
-          <input
-            type="date"
-            name="startDate"
-            value={dates.startDate}
-            onChange={(e) => setDates({ ...dates, startDate: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block font-bold mb-2">Date de Fin :</label>
-          <input
-            type="date"
-            name="endDate"
-            value={dates.endDate}
-            onChange={(e) => setDates({ ...dates, endDate: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          Valider
-        </button>
-      </form>
-      {message && <p className="mt-4 text-green-500">{message}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4 text-gray-950">Définir la période de parrainage</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold mb-2">Date de début :</label>
+            <input
+              type="date"
+              value={dateDebut}
+              onChange={(e) => setDateDebut(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold mb-2">Date de fin :</label>
+            <input
+              type="date"
+              value={dateFin}
+              onChange={(e) => setDateFin(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition flex items-center justify-center"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span>Chargement...</span> // Affiche un indicateur de chargement
+            ) : (
+              "Enregistrer"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
-};
-
-export default SetSponsorshipPeriod;
+}

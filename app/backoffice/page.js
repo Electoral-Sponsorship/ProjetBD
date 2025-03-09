@@ -23,6 +23,7 @@ export default function BackOfficeHome() {
           <li><a href="/backoffice/ListElector" className="text-green-500 hover:underline">Importer Liste Électeurs</a></li>
           <li><a href="/InfCandidat" className="text-green-500 hover:underline">Saisie des Candidats</a></li>
           <li><a href="/backoffice/set-sponsorship-period" className="text-green-500 hover:underline">Ouvrir/Fermer Période de Parrainage</a></li>
+          <li><a href="/ListeCandidat" className="text-green-500 hover:underline">Liste Des Electeurs</a></li>
         </ul>
       </div>
     </div>
