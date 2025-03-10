@@ -67,7 +67,7 @@ class CandidatsController extends Controller
     }
 
     public function register(Request $request) {
-        if(GestionParrainage::where('etatOuverture', '=', '0')->exists()) {
+        if(GestionParrainage::where('dateDebut', '<=', now())->exists()) {
             return response()->json([
                 'message' => "La période de parrainage a débuté, vous ne pouvez plus vous enregistrer"
             ], 400);

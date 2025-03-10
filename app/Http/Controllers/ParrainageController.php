@@ -2,25 +2,49 @@
 
 namespace App\Http\Controllers;
 
+
+use Carbon\Carbon;
+use App\Models\Parrain;
 use App\Models\Candidat;
 use App\Models\Electeur;
-use App\Models\GestionParrainage;
-use App\Models\Parrain;
 use App\Models\Parrainage;
+use Illuminate\Http\Request;
+use function Pest\Laravel\get;
+use App\Models\GestionParrainage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use function PHPUnit\Framework\isJson;
+use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreParrainageRequest;
 use App\Notifications\ParrainagevalidationMail;
 use App\Notifications\ParrainageVerificationMail;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use function Pest\Laravel\get;
-use function PHPUnit\Framework\isEmpty;
-use function PHPUnit\Framework\isJson;
 
-class ParrainageController extends Controller
-{
+
+class ParrainageController extends Controller {
     /**
+     * Enregistrer un parrainage.
+     */
+    // public function store(StoreParrainageRequest $request) {
+
+    //     $parrainage = Parrainage::create([
+    //         'idParrain' => $request->idParrain,
+    //         'dateParrainage' => now(),
+    //     ]);
+
+    //     return response()->json([
+    //         'message' => 'Parrainage enregistré avec succès.',
+    //         'data' => $parrainage
+    //     ], 201);
+    // } 
+
+    public function index() {
+        $parrainages = Parrainage::with('parrain')->get();
+
+        return response()->json($parrainages);
+    }
+
+     /**
      * Display a listing of the resource.
      */
     public function setSponsorshipPeriod(Request $request)
@@ -100,12 +124,10 @@ class ParrainageController extends Controller
             'numElecteur' => 'required|string',
             'codeAuth' => 'required|string', // Code d'authentification
         ]);
-
         $numElecteur = $request->input('numElecteur');
         $codeAuth = $request->input('codeAuth');
         // Recherche du parrain par le numéro d'électeur
-        $parrain = Parrain::where('numElecteur', $numElecteur)
-            ->first();
+        $parrain = Parrain::where('numElecteur', $numElecteur)->first();
 
         // Vérification du parrain
         if (!$parrain) {
@@ -269,11 +291,6 @@ class ParrainageController extends Controller
         }
 
 
-    }
-
-    public function index()
-    {
-        //
     }
 
     /**
