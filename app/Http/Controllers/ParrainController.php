@@ -16,10 +16,7 @@ class ParrainController extends Controller
     // Vérifier si la période de parrainage est ouverte (MAJ)
     private function isParrainageOpen()
     {
-        return GestionParrainage::where('etatOuverture', true)
-            ->where('dateDebut', '<=', now())
-            ->where('dateFin', '>=', now())
-            ->exists();
+        return GestionParrainage::where('dateDebut', '<=', now())->where('dateFin', '>=', now())->exists();
     }
 
     // Étape 1 : Validation des informations électeur (MAJ)
@@ -27,15 +24,15 @@ class ParrainController extends Controller
     {
         // 1. Vérifier la période de parrainage
         if (!$this->isParrainageOpen()) {
-            return response()->json(['error' => 'La période de parrainage est fermée'], 403);
+            return response()->json(['error' => 'La période de parrainage n\'est pas encore définie'], 403); 
         }
 
         // 2. Validation des données (noms de tables corrigés)
         $request->validate([
-            'numElecteur' => 'required|exists:Electeurs,numElecteur', // 'Electeurs' avec majuscule
-            'numCIN' => 'required|exists:Electeurs,numCIN',
-            'nom' => 'required|exists:Electeurs,nom',
-            'numBureauVote' => 'required|exists:Electeurs,numBureauVote',
+            'electorNumber' => 'required|exists:electeurs,numElecteur', // 'Electeurs' avec majuscule
+            'identityNumber' => 'required|exists:electeurs,numCIN',
+            'lastName' => 'required|exists:electeurs,nom',
+            'votingOffice' => 'required|exists:electeurs,bureauVote',
         ]);
 
         // 3. Générer un token temporaire
@@ -57,7 +54,7 @@ class ParrainController extends Controller
             return response()->json(['error' => 'Token invalide ou expiré'], 400);
         }
 
-        if (Parrain::where('numElecteur', $data['numElecteur'])->exists()) {
+        if (Parrain::where('numElecteur', $data['electorNumber'])->exists()) {
             return response()->json([
                 'error' => 'Un électeur ne peut parrainer qu\'un seul candidat'
             ], 409);
@@ -66,18 +63,17 @@ class ParrainController extends Controller
 
         // 2. Validation des coordonnées (noms de tables corrigés)
         $request->validate([
-            'numTel' => 'required|unique:Parrains,numTel|regex:/^[0-9]{9}$/',
-            'adresseMail' => 'required|email|unique:Parrains,adresseMail',
+            'phone' => 'required|unique:parrains,numTel|regex:/^[0-9]{9}$/',
+            'email' => 'required|email|unique:parrains,adresseMail',
         ]);
 
         // 3. Création du parrain avec code
         $code = strtoupper(Str::random(6));
 
         $parrain = Parrain::create([
-            'numElecteur' => $data['numElecteur'],
-            'numBureauVote' => $data['numBureauVote'],
-            'numTel' => $request->numTel,
-            'adresseMail' => $request->adresseMail,
+            'numElecteur' => $data['electorNumber'],
+            'numTel' => $request->phone,
+            'adresseMail' => $request->email,
             'codeAuthentification' => $code,
             'dateParrainage' => now()
         ]);
