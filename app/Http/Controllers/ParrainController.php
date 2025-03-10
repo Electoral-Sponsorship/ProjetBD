@@ -36,11 +36,11 @@ class ParrainController extends Controller
         ]);
 
         // 3. Générer un token temporaire
-        $token = Str::random(40);
-        Cache::put('parrain_token_' . $token, $request->all(), 600);
+        // $token = Str::random(40);
+        // Cache::put('parrain_token_' . $token, $request->all(), 600);
 
         return response()->json([
-            'verification_token' => $token,
+            //'verification_token' => $token,
             'message' => 'Veuillez compléter vos coordonnées'
         ]);
     }
@@ -49,29 +49,40 @@ class ParrainController extends Controller
     public function store(Request $request)
     {
         // 1. Récupérer les données du token
-        $data = Cache::get('parrain_token_' . $request->verification_token);
-        if (!$data) {
-            return response()->json(['error' => 'Token invalide ou expiré'], 400);
-        }
+        // $data = Cache::get('parrain_token_' . $request->verification_token);
+        // if (!$data) {
+        //     return response()->json(['error' => 'Token invalide ou expiré'], 400);
+        // }
 
-        if (Parrain::where('numElecteur', $data['electorNumber'])->exists()) {
+        // 2. Validation des coordonnées (noms de tables corrigés)
+        $request->validate([
+            'phone' => 'required',
+            'email' => 'required',
+            'electorNumber' => 'required',
+
+        ]);
+
+        if (Parrain::where('numElecteur', $request->electorNumber)->exists()) {
             return response()->json([
                 'error' => 'Un électeur ne peut parrainer qu\'un seul candidat'
             ], 409);
         }
-
-
-        // 2. Validation des coordonnées (noms de tables corrigés)
-        $request->validate([
-            'phone' => 'required|unique:parrains,numTel|regex:/^[0-9]{9}$/',
-            'email' => 'required|email|unique:parrains,adresseMail',
-        ]);
+        if(Parrain::where('adresseMail' , '=', $request->email)->exists()) {
+            return response()->json([
+                'error' => 'Un électeur avec cette adresse existe deja'
+            ], 409);
+        }
+        if(Parrain::where('numTel' , '=', $request->phone)->exists()) {
+            return response()->json([
+                'error' => 'Un électeur avec ce numero de telephone existe deja'
+            ], 409);
+        }
 
         // 3. Création du parrain avec code
         $code = strtoupper(Str::random(6));
 
         $parrain = Parrain::create([
-            'numElecteur' => $data['electorNumber'],
+            'numElecteur' => $request->electorNumber,
             'numTel' => $request->phone,
             'adresseMail' => $request->email,
             'codeAuthentification' => $code,
