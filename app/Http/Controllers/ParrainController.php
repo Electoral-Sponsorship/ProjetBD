@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Parrain;
 use App\Models\Electeur;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Mail\VerificationCodeMail;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use App\Models\GestionParrainage; // Modèle modifié
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerificationCodeMail;
 
 class ParrainController extends Controller
 {
@@ -18,12 +18,13 @@ class ParrainController extends Controller
     {
         return GestionParrainage::where('dateDebut', '<=', now())->where('dateFin', '>=', now())->exists();
     }
+
     // Étape 1 : Validation des informations électeur (MAJ)
     public function validateElecteur(Request $request)
     {
         // 1. Vérifier la période de parrainage
         if (!$this->isParrainageOpen()) {
-            return response()->json(['error' => 'La période de parrainage n\'est pas encore définie'], 403);
+            return response()->json(['error' => 'La période de parrainage n\'est pas encore définie'], 403); 
         }
 
         // 2. Validation des données (noms de tables corrigés)

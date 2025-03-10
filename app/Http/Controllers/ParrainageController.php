@@ -138,7 +138,7 @@ class ParrainageController extends Controller {
         }
 
         // Vérification du code d'authentification
-        if ($parrain->codeAuth != $codeAuth) {
+        if ($parrain->codeAuthentification != $codeAuth) {
             return response()->json([
                 'status' => 'error',
                 'description' => 'Le code d\'authentification est invalide.'
@@ -292,7 +292,7 @@ class ParrainageController extends Controller {
 
 
     }
-
+  
     /**
      * Store a newly created resource in storage.
      */
@@ -325,3 +325,4 @@ class ParrainageController extends Controller {
         //
     }
 }
+
