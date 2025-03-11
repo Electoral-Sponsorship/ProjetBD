@@ -203,9 +203,9 @@ class ParrainageController extends Controller
     public function sendVerificationCode(Request $request)
     {
         $validatedData = $request->validate([
-            'idCandidat' => 'required|digit',
+            'idCandidat' => 'required|integer',
             'numElecteur' => 'required|string',
-            'codeValidation' => 'required|string',
+            'codeValidation' => 'required|digits:5',
         ]);
 
         $numElecteur = $validatedData['numElecteur'];
@@ -224,10 +224,15 @@ class ParrainageController extends Controller
 
 
         // Trouver le parrain avec son numElecteur
-        $parrain = Parrain::all()->where("numElecteur", "1001")->first();
-//        $parrain->codevalidation = $code;
+        $parrain = Parrain::where("numElecteur", $request->numElecteur)->first();
 
-//        $parrain->update(['codevalidation' => $code]);
+        if (!$parrain){
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Le numero d\'électeur ne correspond à aucun Parrain'
+            ]);
+        }
+
         DB::table('parrains')
             ->where('numElecteur', $parrain->numElecteur)
             ->update([
@@ -235,18 +240,12 @@ class ParrainageController extends Controller
                 'dateParrainage' => Carbon::today()
             ]);
 
-        $idParrain = Parrain::all()->where("numElecteur", $request->numElecteur)->first();
-        if(!$idParrain){
-            return response()->json([
-                'status' => 'error',
-                'description' => 'Le numero d\'électeur envoyé ne correspond à celui d\'aucun parrain n\'existe pas'
-            ]);
-        }
+        $idParrain = $parrain->idParrain;
         $idCandidat = $request->idCandidat;
 
         DB::table('parrainages')->insert([
             'idCandidat' => $idCandidat,
-            'idParrain' => $idParrain->idParrain,
+            'idParrain' => $idParrain,
         ]);
 
 //        return($parrain);
@@ -256,7 +255,6 @@ class ParrainageController extends Controller
             'status' => 'success',
             'description' => 'Parrainage effectué'
         ]);
-
 
     }
 
