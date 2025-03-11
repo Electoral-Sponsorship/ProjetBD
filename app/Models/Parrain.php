@@ -18,7 +18,7 @@ class Parrain extends Model {
 
         "idParrain",
         "numElecteur",
-        "dateParrainage",
+//        "dateParrainage",
         "numTel",
         "adresseMail",
         "codevalidation",
