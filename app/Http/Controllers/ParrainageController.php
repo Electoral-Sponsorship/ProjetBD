@@ -9,6 +9,7 @@ use App\Models\Candidat;
 use App\Models\Electeur;
 use App\Models\Parrainage;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\table;
 use function Pest\Laravel\get;
 use App\Models\GestionParrainage;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,8 @@ use App\Notifications\ParrainagevalidationMail;
 use App\Notifications\ParrainageVerificationMail;
 
 
-class ParrainageController extends Controller {
+class ParrainageController extends Controller
+{
     /**
      * Enregistrer un parrainage.
      */
@@ -36,15 +38,16 @@ class ParrainageController extends Controller {
     //         'message' => 'Parrainage enregistré avec succès.',
     //         'data' => $parrainage
     //     ], 201);
-    // } 
+    // }
 
-    public function index() {
+    public function index()
+    {
         $parrainages = Parrainage::with('parrain')->get();
 
         return response()->json($parrainages);
     }
 
-     /**
+    /**
      * Display a listing of the resource.
      */
     public function setSponsorshipPeriod(Request $request)
@@ -200,6 +203,7 @@ class ParrainageController extends Controller {
     public function sendVerificationCode(Request $request)
     {
         $validatedData = $request->validate([
+            'idCandidat' => 'required|digit',
             'numElecteur' => 'required|string',
             'codeValidation' => 'required|string',
         ]);
@@ -210,7 +214,7 @@ class ParrainageController extends Controller {
         if ($code != $validatedData['codeValidation']) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Code expiré'
+                'description' => 'Code expiré ou invalide'
             ]);
         }
 
@@ -230,6 +234,20 @@ class ParrainageController extends Controller {
                 'codevalidation' => $code,
                 'dateParrainage' => Carbon::today()
             ]);
+
+        $idParrain = Parrain::all()->where("numElecteur", $request->numElecteur)->first();
+        if(!$idParrain){
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Le numero d\'électeur envoyé ne correspond à celui d\'aucun parrain n\'existe pas'
+            ]);
+        }
+        $idCandidat = $request->idCandidat;
+
+        DB::table('parrainages')->insert([
+            'idCandidat' => $idCandidat,
+            'idParrain' => $idParrain->idParrain,
+        ]);
 
 //        return($parrain);
         $parrain->notify(new ParrainageVerificationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));
@@ -292,7 +310,7 @@ class ParrainageController extends Controller {
 
 
     }
-  
+
     /**
      * Store a newly created resource in storage.
      */
