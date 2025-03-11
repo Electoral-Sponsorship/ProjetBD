@@ -237,7 +237,7 @@ class ParrainageController extends Controller
             ->where('numElecteur', $parrain->numElecteur)
             ->update([
                 'codevalidation' => $code,
-//                'dateParrainage' => Carbon::today()
+                'dateParrainage' => Carbon::today()
             ]);
 
         $idParrain = $parrain->idParrain;
