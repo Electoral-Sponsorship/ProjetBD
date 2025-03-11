@@ -26,17 +26,17 @@ const ParrainProfile = () => {
     }
 
     try {
-      const response = await fetch("/api/verifyInfo", {
+      const response = await fetch("http://localhost:8000/api/parrains/validate-electeur", {
         method: "POST",
         body: JSON.stringify({ electorNumber, identityNumber, lastName, votingOffice }),
         headers: { "Content-Type": "application/json" },
       });
 
       const data = await response.json();
-      if (data.isValid) {
+      if (response.ok) {
         setStep(2);
       } else {
-        setError("Les informations d'authentification sont invalides.");
+        setError(data.error);
       }
     } catch (error) {
       setError("Erreur de connexion. Veuillez réessayer.");
@@ -49,49 +49,53 @@ const ParrainProfile = () => {
       setError("Veuillez entrer un numéro de téléphone ou un email.");
       return;
     }
-
+    console.log("Elector Number utilisé pour l'enregistrement:", electorNumber); 
     try {
-      const response = await fetch("/api/details", {
+      const response = await fetch("http://localhost:8000/api/parrains/register", {
         method: "POST",
-        body: JSON.stringify({ phone, email }),
+        body: JSON.stringify({ electorNumber, phone, email}),
         headers: { "Content-Type": "application/json" },
       });
 
       const data = await response.json();
-      if (data.phoneUsed || data.emailUsed) {
-        setError("Le numéro de téléphone ou l'email a déjà été utilisé.");
-        return;
-      }
-
-      const registrationResponse = await fetch("/api/profile", {
-        method: "POST",
-        body: JSON.stringify({ electorNumber, identityNumber, lastName, firstName, votingOffice, phone, email }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (registrationResponse.ok) {
-        await sendAuthCode(phone, email);
-        setAuthCodeSent(true);
-        alert("Profil enregistré. Un code de vérification a été envoyé par SMS et email.");
+      console.log(data);
+      if (response.ok) {
+        setError(data.message);
       } else {
-        setError("Erreur lors de l'enregistrement du profil.");
+        setError(data.error)
       }
+      return;
+      
+
+      // const registrationResponse = await fetch("http://localhost:8000/api/parrains/register", {
+      //   method: "POST",
+      //   body: JSON.stringify({ electorNumber, identityNumber, lastName, firstName, votingOffice, phone, email }),
+      //   headers: { "Content-Type": "application/json" },
+      // });
+
+      // if (registrationResponse.ok) {
+      //   await sendAuthCode(phone, email);
+      //   setAuthCodeSent(true);
+      //   alert("Profil enregistré. Un code de vérification a été envoyé par email.");
+      // } else {
+      //   setError("Erreur lors de l'enregistrement du profil.");
+      // }
     } catch (error) {
       setError("Erreur réseau. Veuillez réessayer.");
     }
   };
 
-  const sendAuthCode = async (phone, email) => {
-    try {
-      await fetch("/api/sendAuthCode", {
-        method: "POST",
-        body: JSON.stringify({ phone, email }),
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      setError("Erreur lors de l'envoi du code de vérification.");
-    }
-  };
+  // const sendAuthCode = async (phone, email) => {
+  //   try {
+  //     await fetch("/api/sendAuthCode", {
+  //       method: "POST",
+  //       body: JSON.stringify({ phone, email }),
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //   } catch (error) {
+  //     setError("Erreur lors de l'envoi du code de vérification.");
+  //   }
+  // };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 text-gray-950">
@@ -182,3 +186,4 @@ const ParrainProfile = () => {
 };
 
 export default ParrainProfile;
+
