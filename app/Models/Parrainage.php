@@ -10,6 +10,7 @@ class Parrainage extends Model {
     public $timestamps = false;
     protected $fillable =[
         "idCandidat",
-        "idParrain"
+        "idParrain",
+        "dateParrainage"
     ];
 }
