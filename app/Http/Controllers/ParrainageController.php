@@ -237,7 +237,7 @@ class ParrainageController extends Controller
             ->where('numElecteur', $parrain->numElecteur)
             ->update([
                 'codevalidation' => $code,
-                'dateParrainage' => Carbon::today()
+//                'dateParrainage' => Carbon::today()
             ]);
 
         $idParrain = $parrain->idParrain;
@@ -246,6 +246,7 @@ class ParrainageController extends Controller
         DB::table('parrainages')->insert([
             'idCandidat' => $idCandidat,
             'idParrain' => $idParrain,
+            'dateParrainage' => Carbon::today()
         ]);
 
 //        return($parrain);
@@ -261,7 +262,7 @@ class ParrainageController extends Controller
     public function trackSponsorshipProgress(Request $request)
     {
         $request->validate([
-            'idUser' => 'required|integer',
+            'idCandidat' => 'required|integer',
             'codeAuth' => 'required|integer',
             'email' => 'email|string',
         ]);
@@ -276,11 +277,11 @@ class ParrainageController extends Controller
         if (!$candidatExists) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Cette candidat est introuvable.'
+                'description' => 'Ce candidat est introuvable.'
             ]);
         };
 
-        $id = $request->input('idUser');
+        $id = $request->input('idCandidat');
         $parrainages = Parrainage::where('idCandidat', $id)->get();  // Utilise get() pour récupérer les résultats
 
         if ($parrainages->isEmpty()) {  // Vérifie si la collection est vide
