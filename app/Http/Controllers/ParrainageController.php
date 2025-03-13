@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use function Pest\Laravel\get;
 use App\Models\GestionParrainage;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\table;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use function PHPUnit\Framework\isJson;
 use function PHPUnit\Framework\isEmpty;
@@ -242,8 +244,9 @@ class ParrainageController extends Controller {
 
     }
 
-    public function trackSponsorshipProgress(Request $request)
+    /*public function trackSponsorshipProgress(Request $request)
     {
+        Log::info('Données de la requête', $request->all());
         $request->validate([
             'idUser' => 'required|integer',
             'codeAuth' => 'required|integer',
@@ -289,10 +292,61 @@ class ParrainageController extends Controller {
             }
             return response()->json($electeurs);  // Retourne les parrainages si disponibles
         }
-
-
     }
-  
+    */
+    public function trackSponsorshipProgress(Request $request)
+    {
+        $request->validate([
+            'codeAuth' => 'required|integer',
+            'adresseMail' => 'email|string',
+        ]);
+    
+        // Vérifier si le candidat existe
+        $candidat = Candidat::where([
+            ['codeAuth', '=', $request->input('codeAuth')],
+            ['adresseMail', '=', $request->input('adresseMail')]
+        ])->first();
+    
+        if (!$candidat) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Ce candidat est introuvable.'
+            ]);
+        }
+    
+        // Récupérer les parrainages AVEC les relations parrain & electeur
+        $parrainages = Parrainage::where('idCandidat', $candidat->idCandidat)
+            ->with('parrain.electeur') // Charge Parrain ET Electeur en une seule requête
+            ->get();
+    
+        if ($parrainages->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Désolé, vous n\'avez aucun parrainage disponible.'
+            ]);
+        }
+    
+        // Construire la liste des électeurs
+        $electeurs = $parrainages->map(function ($parrainage) {
+            $parrain = $parrainage->parrain;
+            $electeur = $parrain ? $parrain->electeur : null;
+    
+            if (!$electeur) {
+                return null; // Ignore si pas d'électeur
+            }
+    
+            return [
+                'numElecteur' => $electeur->numElecteur,
+                'nom' => $electeur->nom,
+                'prenoms' => $electeur->prenoms,
+                'sexe' => $electeur->sexe,
+            ];
+        })->filter(); // Enlève les null
+    
+        return response()->json($electeurs);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */

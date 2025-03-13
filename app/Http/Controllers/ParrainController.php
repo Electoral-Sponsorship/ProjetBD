@@ -69,7 +69,7 @@ class ParrainController extends Controller
         }
         if(Parrain::where('adresseMail' , '=', $request->email)->exists()) {
             return response()->json([
-                'error' => 'Un électeur avec cette adresse existe deja'
+                'error' => 'Un électeur avec cette adresse mail existe deja'
             ], 409);
         }
         if(Parrain::where('numTel' , '=', $request->phone)->exists()) {

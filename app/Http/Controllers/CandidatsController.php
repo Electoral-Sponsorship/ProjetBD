@@ -158,6 +158,7 @@ class CandidatsController extends Controller
             Cache::forget('code_verification_' . $candidat->numElecteur);
             return response()->json([
                 'message' => 'Code de sécurité vérifié avec succès. Vous pouvez accéder à votre espace candidat.',
+                'idCandidat' => $candidat->idCandidat,
             ]);
         }else {
             return response()->json([

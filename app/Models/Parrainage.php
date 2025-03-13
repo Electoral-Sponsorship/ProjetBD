@@ -12,4 +12,9 @@ class Parrainage extends Model {
         "idCandidat",
         "idParrain"
     ];
+
+    public function parrain()
+    {
+        return $this->belongsTo(Parrain::class, 'idParrain', 'idParrain');
+    }
 }
