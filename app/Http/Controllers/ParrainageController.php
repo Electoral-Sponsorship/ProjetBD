@@ -9,6 +9,7 @@ use App\Models\Candidat;
 use App\Models\Electeur;
 use App\Models\Parrainage;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\table;
 use function Pest\Laravel\get;
 use App\Models\GestionParrainage;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,8 @@ use App\Notifications\ParrainagevalidationMail;
 use App\Notifications\ParrainageVerificationMail;
 
 
-class ParrainageController extends Controller {
+class ParrainageController extends Controller
+{
     /**
      * Enregistrer un parrainage.
      */
@@ -38,15 +40,16 @@ class ParrainageController extends Controller {
     //         'message' => 'Parrainage enregistré avec succès.',
     //         'data' => $parrainage
     //     ], 201);
-    // } 
+    // }
 
-    public function index() {
+    public function index()
+    {
         $parrainages = Parrainage::with('parrain')->get();
 
         return response()->json($parrainages);
     }
 
-     /**
+    /**
      * Display a listing of the resource.
      */
     public function setSponsorshipPeriod(Request $request)
@@ -202,8 +205,9 @@ class ParrainageController extends Controller {
     public function sendVerificationCode(Request $request)
     {
         $validatedData = $request->validate([
+            'idCandidat' => 'required|integer',
             'numElecteur' => 'required|string',
-            'codeValidation' => 'required|string',
+            'codeValidation' => 'required|digits:5',
         ]);
 
         $numElecteur = $validatedData['numElecteur'];
@@ -212,7 +216,7 @@ class ParrainageController extends Controller {
         if ($code != $validatedData['codeValidation']) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Code expiré'
+                'description' => 'Code expiré ou invalide'
             ]);
         }
 
@@ -222,16 +226,30 @@ class ParrainageController extends Controller {
 
 
         // Trouver le parrain avec son numElecteur
-        $parrain = Parrain::all()->where("numElecteur", "1001")->first();
-//        $parrain->codevalidation = $code;
+        $parrain = Parrain::where("numElecteur", $request->numElecteur)->first();
 
-//        $parrain->update(['codevalidation' => $code]);
+        if (!$parrain){
+            return response()->json([
+                'status' => 'error',
+                'description' => 'Le numero d\'électeur ne correspond à aucun Parrain'
+            ]);
+        }
+
         DB::table('parrains')
             ->where('numElecteur', $parrain->numElecteur)
             ->update([
                 'codevalidation' => $code,
                 'dateParrainage' => Carbon::today()
             ]);
+
+        $idParrain = $parrain->idParrain;
+        $idCandidat = $request->idCandidat;
+
+        DB::table('parrainages')->insert([
+            'idCandidat' => $idCandidat,
+            'idParrain' => $idParrain,
+            'dateParrainage' => Carbon::today()
+        ]);
 
 //        return($parrain);
         $parrain->notify(new ParrainageVerificationMail($code, $parrain->foreigner->prenoms, $parrain->foreigner->nom));
@@ -241,14 +259,13 @@ class ParrainageController extends Controller {
             'description' => 'Parrainage effectué'
         ]);
 
-
     }
 
     /*public function trackSponsorshipProgress(Request $request)
     {
         Log::info('Données de la requête', $request->all());
         $request->validate([
-            'idUser' => 'required|integer',
+            'idCandidat' => 'required|integer',
             'codeAuth' => 'required|integer',
             'email' => 'email|string',
         ]);
@@ -263,11 +280,11 @@ class ParrainageController extends Controller {
         if (!$candidatExists) {
             return response()->json([
                 'status' => 'error',
-                'description' => 'Cette candidat est introuvable.'
+                'description' => 'Ce candidat est introuvable.'
             ]);
         };
 
-        $id = $request->input('idUser');
+        $id = $request->input('idCandidat');
         $parrainages = Parrainage::where('idCandidat', $id)->get();  // Utilise get() pour récupérer les résultats
 
         if ($parrainages->isEmpty()) {  // Vérifie si la collection est vide

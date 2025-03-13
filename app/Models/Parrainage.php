@@ -10,7 +10,8 @@ class Parrainage extends Model {
     public $timestamps = false;
     protected $fillable =[
         "idCandidat",
-        "idParrain"
+        "idParrain",
+        "dateParrainage"
     ];
 
     public function parrain()
@@ -18,3 +19,4 @@ class Parrainage extends Model {
         return $this->belongsTo(Parrain::class, 'idParrain', 'idParrain');
     }
 }
+
