@@ -13,4 +13,10 @@ class Parrainage extends Model {
         "idParrain",
         "dateParrainage"
     ];
+
+    public function parrain()
+    {
+        return $this->belongsTo(Parrain::class, 'idParrain', 'idParrain');
+    }
 }
+
