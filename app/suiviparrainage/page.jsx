@@ -1,63 +1,147 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
-import { Calendar, Users } from "lucide-react";
 
-export default function SuiviParrainages() {
-  const router = useRouter();
+import { useState } from "react";
+import { ClipboardList, UserCheck, Mail, Key, AlertCircle } from "lucide-react";
+
+const SuiviParrainage = () => {
+  const [email, setEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [error, setError] = useState("");
   const [parrainages, setParrainages] = useState([]);
-  const [candidat, setCandidat] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
-  useEffect(() => {
-    const storedCandidat = localStorage.getItem("candidat");
-    if (!storedCandidat) {
-      router.push("/candidat/login");
-      return;
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:8000/api/verifyCode", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code: verificationCode }),
+      });
+ 
+      const data = await response.json();
+      if (response.ok) {
+        fetchParrainages();
+        setIsVerified(true);
+      } else {
+        setError(data.message || "Code d'authentification invalide.");
+        setEmail("");
+        setVerificationCode("");
+      }
+    } catch (err) {
+      setError("Une erreur est survenue lors de la vérification du code.");
+      setEmail("");
+      setVerificationCode("");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const candidatData = JSON.parse(storedCandidat);
-    setCandidat(candidatData);
-
-    // Charger les parrainages depuis json-server
-    fetch(`http://localhost:5000/parrainages?candidat_id=${candidatData.id}`)
-      .then((res) => res.json())
-      .then((data) => setParrainages(data))
-      .catch(() => toast({ title: "Erreur", description: "Impossible de charger les parrainages.", variant: "destructive" }));
-  }, []);
+  const fetchParrainages = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/parrainage/track-progress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ adresseMail: email, codeAuth: verificationCode }),
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        setParrainages(data);
+      } else {
+        setError(data.description || "Erreur lors de la récupération des parrainages.");
+        setEmail("");
+        setVerificationCode("");
+      }
+    } catch (err) {
+      setError("Une erreur est survenue lors de la récupération des parrainages.");
+      setEmail("");
+      setVerificationCode("");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-lg w-full bg-white p-8 rounded-2xl shadow-lg">
-        <h2 className="text-center text-2xl font-bold text-green-600">📊 Suivi des Parrainages</h2>
-        {candidat && (
-          <p className="text-center text-gray-700 flex items-center justify-center gap-2">
-            <Users className="text-green-600" />
-            Candidat : {candidat.email}
-          </p>
-        )}
+    <div className="flex justify-center items-center h-screen bg-gray-100 text-gray-950">
+      {!isVerified ? (
+        <div className="bg-white p-8 rounded-lg shadow-md w-96">
+          <h1 className="text-2xl font-bold text-center mb-6">Suivi des Parrainages</h1>
+          <form onSubmit={handleVerifyCode}>
+            <div className="mb-4 flex items-center gap-2">
+              <Mail className="text-gray-600" />
+              <input
+                type="email"
+                placeholder="Adresse e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+                required
+              />
+            </div>
 
-        <div className="mt-6">
+            <div className="mb-4 flex items-center gap-2">
+              <Key className="text-gray-600" />
+              <input
+                type="text"
+                placeholder="Code de vérification"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="mt-4 text-red-500 text-center flex items-center gap-2">
+                <AlertCircle /> {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600 transition"
+              disabled={loading}
+            >
+              {loading ? "Vérification en cours..." : "Vérifier le code"}
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
+         
+          <h2 className="text-xl font-bold text-center text-green-600 mb-4">Liste des Parrainages</h2>
           {parrainages.length > 0 ? (
-            <ul className="space-y-4">
-              {parrainages.map((p) => (
-                <li key={p.date} className="p-4 bg-gray-50 rounded-lg flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="text-blue-600" />
-                    <span>{p.date}</span>
+            <ul className="divide-y divide-gray-200">
+              {parrainages.map((parrainage, index) => (
+                <li key={index} className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    <UserCheck className="text-green-500" />
+                    <div>
+                      <p className="font-semibold">{parrainage.nom} {parrainage.prenoms}</p>
+                      <p className="text-sm text-gray-600">Numéro d'électeur: {parrainage.numElecteur}</p>
+                    </div>
                   </div>
-                  <span className="font-bold flex items-center gap-2">
-                    <Users className="text-green-600" />
-                    {p.total} parrains
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">Sexe: {parrainage.sexe}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-center text-gray-600">Aucun parrainage enregistré.</p>
+            <div className="text-center text-gray-500">
+              <AlertCircle className="mx-auto text-red-500 mb-2" />
+              Aucun parrainage disponible.
+            </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
-}
+};
+
+export default SuiviParrainage;
