@@ -80,7 +80,7 @@ class CandidatsController extends Controller
                 'slogan' => 'required|string',
                 'couleurs' => 'required|string',
                 'urlInfo' => 'required|url',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
             $electeur = Electeur::where('numElecteur', '=', $request->numeroElecteur)->first();
                 if(!$electeur) {
@@ -99,6 +99,10 @@ class CandidatsController extends Controller
                     'message' => 'Cet email est déjà utilisé par un autre candidat.',
                 ],400);
             }
+            $photopath = null;
+            if($request->hasFile('photo')) {
+                $photopath = $request->file('photo')->store('candidats_photos', 'public');
+            }
             $candidat = Candidat::create([
                 'numElecteur' => $request->numeroElecteur,
                 'numTel' => $request->telephone,
@@ -107,7 +111,7 @@ class CandidatsController extends Controller
                 'slogan' => $request->slogan,
                 'couleurs' =>  $request->couleurs,
                 'urlPageInfo' => $request->urlInfo,
-                'photo' => $request->photo
+                'photo' => $photopath
             ]);
             $codeAuth = $this->generateCode();
             Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(50));

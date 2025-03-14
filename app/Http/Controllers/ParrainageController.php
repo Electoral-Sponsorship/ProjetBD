@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use function Pest\Laravel\get;
 use App\Models\GestionParrainage;
 use Illuminate\Support\Facades\DB;
-use function Laravel\Prompts\table;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use function PHPUnit\Framework\isJson;
