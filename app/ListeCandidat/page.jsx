@@ -1,69 +1,97 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, RefreshCw, CircleUserRound} from "lucide-react";
+import { Eye, RefreshCw, CircleUserRound } from "lucide-react";
 
 export default function ListeCandidats() {
   const { toast } = useToast();
   const [candidats, setCandidats] = useState([]);
   const [selectedCandidat, setSelectedCandidat] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Charger la liste des candidats depuis le backend ou json-server
   useEffect(() => {
-    fetch("http://localhost:8000/api/candidats") // 🔹 À modifier selon l'API backend
+    fetch("http://localhost:8000/api/candidats")
       .then((res) => res.json())
       .then((data) => setCandidats(data))
-      .catch(() => toast({ title: "Erreur", description: "Impossible de charger les candidats", variant: "destructive" }));
+      .catch(() => 
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les candidats",
+          variant: "destructive",
+        })
+      );
   }, []);
 
-  // Afficher les détails d'un candidat
   const voirDetails = (candidat) => {
     setSelectedCandidat(candidat);
   };
 
   const genererCode = async () => {
     if (!selectedCandidat) {
-      toast({ title: "Erreur", description: "Aucun candidat sélectionné", variant: "destructive" });
-      return;
-    }
-  
-    // Envoi de la requête POST à Laravel
-    const response = await fetch(`http://localhost:8000/api/resendCode/${selectedCandidat.numElecteur}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  
-    const data = await response.json();
-  
-    if (response.ok) {
-      toast({
-        title: "Succès",
-        description:`✅ ${data.message} a l'\adresse ${selectedCandidat.email}`, 
-      });
-    } else {
       toast({
         title: "Erreur",
-        description:`❌${data.message}`,
+        description: "Aucun candidat sélectionné",
         variant: "destructive",
       });
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/resendCode/${selectedCandidat.numElecteur}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Succès",
+          description: `✅ ${data.message} à l'adresse ${selectedCandidat.email}`,
+        });
+      } else {
+        toast({
+          title: "Erreur",
+          description: `❌ ${data.message}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la génération du code.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-lg">
         <h2 className="text-center text-2xl font-bold text-green-600">Liste des Candidats</h2>
 
-        {/* Affichage de la liste des candidats */}
         <div className="mt-6">
           {candidats.length > 0 ? (
             <ul className="space-y-4">
               {candidats.map((candidat) => (
-                <li key={candidat.idCandidat} className="p-4 bg-gray-50 rounded-lg flex justify-between items-center">
-                 <CircleUserRound /> <span>{candidat.nom} {candidat.prenom}</span>
-                  <button onClick={() => voirDetails(candidat)} className="text-blue-600 hover:text-blue-800 flex items-center">
+                <li
+                  key={candidat.idCandidat}
+                  className="p-4 bg-gray-50 rounded-lg flex justify-between items-center"
+                >
+                  <CircleUserRound /> <span>{candidat.nom} {candidat.prenom}</span>
+                  <button
+                    onClick={() => voirDetails(candidat)}
+                    className="text-blue-600 hover:text-blue-800 flex items-center"
+                  >
                     <Eye className="mr-2" /> Voir Détails
                   </button>
                 </li>
@@ -74,7 +102,6 @@ export default function ListeCandidats() {
           )}
         </div>
 
-        {/* Affichage des détails du candidat sélectionné */}
         {selectedCandidat && (
           <div className="mt-6 p-4 border rounded-lg bg-gray-50">
             <h3 className="text-lg font-bold text-green-600">Détails du Candidat</h3>
@@ -85,12 +112,13 @@ export default function ListeCandidats() {
             <p><strong>Slogan :</strong> {selectedCandidat.slogan}</p>
             <p><strong>Couleurs :</strong> {selectedCandidat.couleurs}</p>
 
-            {/* Bouton pour générer un nouveau code */}
-            <button 
-              onClick={genererCode} 
-              className="mt-4 w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition flex items-center justify-center">
+            <button
+              onClick={genererCode}
+              className="mt-4 w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition flex items-center justify-center"
+              disabled={loading}
+            >
               <RefreshCw className="mr-2" />
-              Générer un nouveau code
+              {loading ? "Génération du code..." : "Générer un nouveau code"}
             </button>
           </div>
         )}

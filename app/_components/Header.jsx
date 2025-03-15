@@ -34,11 +34,11 @@ export default function Header() {
           <Link href="/InfCandidat" className="text-white hover:text-yellow-300">Informations Candidat</Link>
           <Link href="/parrainage" className="text-white hover:text-yellow-300">Parrainage</Link>
           <Link href="/parrain" className="text-white hover:text-yellow-300">enregistrer parrain</Link>
-          {user ? (
+          {/* {user ? (
             <Link href="/backoffice" className="text-white hover:text-yellow-300">BackOffice</Link>
           ) : (
             <a onClick={() => router.push("/login")} className="text-white hover:text-yellow-300 cursor-pointer">BackOffice</a>
-          )}
+          )} */}
         </nav>
 
         <div className="flex items-center space-x-4">
