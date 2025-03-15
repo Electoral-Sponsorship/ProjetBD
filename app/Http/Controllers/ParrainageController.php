@@ -85,6 +85,24 @@ class ParrainageController extends Controller {
         }
     }
 
+    public function getDashboardStatistics() {
+        // Récupérer le nombre d'électeurs importés
+        $importedElectors = Electeur::count();
+    
+        // Récupérer le nombre de candidats enregistrés
+        $registeredCandidates = Candidat::count();
+    
+        // Récupérer le nombre total de parrainages
+        $totalSponsorships = Parrainage::count();
+    
+        // Retourner les statistiques au format JSON
+        return response()->json([
+            'importedElectors' => $importedElectors,
+            'registeredCandidates' => $registeredCandidates,
+            'totalSponsorships' => $totalSponsorships,
+        ]);
+    }
+
     public function verifyIdentifiers(Request $request)
     {
         try {

@@ -42,6 +42,7 @@ Route::middleware(CorsMiddleware::class)->group(function() {
         Route::post('/set-sponsorship-period', [ParrainageController::class, 'setSponsorshipPeriod']);
         Route::post('/verify-identifiers', [ParrainageController::class, 'verifyIdentifiers']);
         Route::post('/verify-auth-code', [ParrainageController::class, 'verifyAuthCode']);
+        Route::get('/dashboard-statistics', [ParrainageController::class, 'getDashboardStatistics']);
         Route::post('/send-verification-code', [ParrainageController::class, 'sendVerificationCode']);
         Route::post('/send-validation-code', [ParrainageController::class, 'sendValidationCode']);
         Route::post('/track-progress', [ParrainageController::class, 'trackSponsorshipProgress']);
