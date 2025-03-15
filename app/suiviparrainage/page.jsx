@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ClipboardList, UserCheck, Mail, Key, AlertCircle } from "lucide-react";
+import { ClipboardList, UserCheck, Mail, Key, AlertCircle, Calendar } from "lucide-react";
 
 const SuiviParrainage = () => {
   const [email, setEmail] = useState("");
@@ -115,7 +115,6 @@ const SuiviParrainage = () => {
         </div>
       ) : (
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-         
           <h2 className="text-xl font-bold text-center text-green-600 mb-4">Liste des Parrainages</h2>
           {parrainages.length > 0 ? (
             <ul className="divide-y divide-gray-200">
@@ -126,6 +125,7 @@ const SuiviParrainage = () => {
                     <div>
                       <p className="font-semibold">{parrainage.nom} {parrainage.prenoms}</p>
                       <p className="text-sm text-gray-600">Numéro d'électeur: {parrainage.numElecteur}</p>
+                      <p className="text-sm text-gray-600 flex items-center gap-2"><Calendar className="text-gray-500" /> Date du parrainage: {parrainage.dateParrainage}</p>
                     </div>
                   </div>
                   <span className="text-sm font-medium text-gray-700">Sexe: {parrainage.sexe}</span>
