@@ -374,6 +374,7 @@ class ParrainageController extends Controller
                 'nom' => $electeur->nom,
                 'prenoms' => $electeur->prenoms,
                 'sexe' => $electeur->sexe,
+                'dateParrainage' => $parrainage->dateParrainage,
             ];
         })->filter(); // Enlève les null
     
