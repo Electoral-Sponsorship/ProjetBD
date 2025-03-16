@@ -192,7 +192,7 @@ class ParrainageController extends Controller {
                     'slogan' => $candidat->slogan,
                     'couleurs' => $candidat->couleurs,
                     'urlPageInfo' => $candidat->urlPageInfo,
-                    'photo' => url('storage/' . $candidat->photo),  // Assurez-vous que la photo est dans le dossier 'storage'
+                    'photo' => $candidat->photo,  
                 ];
             })
         ]);

@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidat;
 use App\Models\Electeur;
-use App\Models\GestionParrainage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Models\GestionParrainage;
 use App\Notifications\CandidatMail;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Contracts\Service\Attribute\Required;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CandidatsController extends Controller
 {
@@ -101,7 +102,8 @@ class CandidatsController extends Controller
             }
             $photopath = null;
             if($request->hasFile('photo')) {
-                $photopath = $request->file('photo')->store('candidats_photos', 'public');
+                $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
+                $photopath = $cloudinaryImage->getSecurePath(); 
             }
             $candidat = Candidat::create([
                 'numElecteur' => $request->numeroElecteur,
