@@ -1,57 +1,119 @@
-export default function Footer() {
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa"; // Icônes de réseaux sociaux
+
+function Footer() {
   return (
-    <footer className="bg-green-900 text-white py-10">
-      <div className="container mx-auto px-6">
-        {/* Logo et Newsletter */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="flex items-center space-x-4">
-            <img src="https://th.bing.com/th/id/OIP.fyFuEMr9oQl5ADIsv5WPyQHaJY?rs=1&pid=ImgDetMain" alt="Logo" className="h-10" />
-            <h2 className="text-2xl font-bold">Electoral Sponsor Pro</h2>
-          </div>
-          <form className="flex items-center mt-4 md:mt-0">
-            <input
-              type="email"
-              placeholder="Input your email"
-              className="px-4 py-2 rounded-l bg-white text-black border border-green-700 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-r"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-
-        {/* Liens du footer */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-center md:text-left justify-center">
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">Resources</h3>
+            <h3 className="text-xl font-bold mb-4 text-green-500">À propos</h3>
+            <p className="text-gray-400">
+              Une plateforme numérique sécurisée pour simplifier la gestion des parrainages électoraux.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-green-500">Liens utiles</h3>
             <ul className="space-y-2">
-              <li className="hover:text-yellow-400"><a href="#">Blog</a></li>
-              <li className="hover:text-yellow-400"><a href="#">User guides</a></li>
-              <li className="hover:text-yellow-400"><a href="#">Webinars</a></li>
+              <li>
+                <a
+                  href="/parrain"
+                  className="flex items-center text-gray-400 hover:text-green-500 transition duration-300"
+                >
+                  <span className="mr-2">+</span> Enregistrer votre profil parrain
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/candidats"
+                  className="flex items-center text-gray-400 hover:text-green-500 transition duration-300"
+                >
+                  <span className="mr-2">+</span> Voir la liste des candidats
+                </a>
+              </li>
             </ul>
           </div>
+
           <div>
-            <h3 className="font-bold text-lg mb-4">Company</h3>
-            <ul className="space-y-2">
-              <li className="hover:text-yellow-400"><a href="#">A propos</a></li>
-              <li className="hover:text-yellow-400"><a href="#">Contactez Nous</a></li>
-            </ul>
+            <h3 className="text-xl font-bold mb-4 text-green-500">Contact</h3>
+            <p className="text-gray-400 flex items-center mb-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              parrainage_sn@gmail.com
+            </p>
+            <p className="text-gray-400 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-1.264 1.012a1 1 0 00-.616.929l-3.222 2.147a1 1 0 01-1.41-.188l-1.498-4.493A2 2 0 013 5z"
+                />
+              </svg>
+              +221 33 456 78 49
+            </p>
           </div>
         </div>
 
-        {/* Pied de page */}
-        <div className="mt-8 text-white text-center">
-          <p>© 2025 Sénégal, Inc. - <a href="#" className="hover:text-yellow-300">Privacy</a> - <a href="#" className="hover:text-yellow-300">Terms</a> - <a href="#" className="hover:text-yellow-300">Sitemap</a></p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-twitter"></i></a>
-            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-linkedin"></i></a>
-            <a href="#" className="hover:text-yellow-300 text-xl"><i className="fab fa-github"></i></a>
-          </div>
+        <div className="mt-8 flex justify-center space-x-6">
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-green-500 transition duration-300"
+          >
+            <FaFacebook className="text-2xl" />
+          </a>
+          <a
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-green-500 transition duration-300"
+          >
+            <FaTwitter className="text-2xl" />
+          </a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-green-500 transition duration-300"
+          >
+            <FaInstagram className="text-2xl" />
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-green-500 transition duration-300"
+          >
+            <FaLinkedin className="text-2xl" />
+          </a>
+        </div>
+
+        <div className="mt-8 text-center text-gray-500">
+          &copy; {new Date().getFullYear()} Gestion des Parrainages Électoraux.
         </div>
       </div>
     </footer>
   );
 }
+
+export default Footer;
