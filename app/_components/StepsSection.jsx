@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
-import { FaUserPlus, FaHandPointer, FaCheckCircle, FaCalendarAlt } from "react-icons/fa"; 
+import { FaUserPlus, FaHandPointer, FaCheckCircle, FaCalendarAlt } from "react-icons/fa";
 
 function StepsSection() {
-  const [activeStep, setActiveStep] = useState(null); 
-
+  const [activeStep, setActiveStep] = useState(null);
 
   const steps = [
     {
@@ -74,7 +73,9 @@ function StepsSection() {
 
               <div
                 className={`p-6 text-gray-600 transition-all duration-300 overflow-hidden ${
-                  activeStep === step.id ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  activeStep === step.id
+                    ? "max-h-[20rem] md:max-h-60 lg:max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
                 <div className="flex items-center space-x-4">
