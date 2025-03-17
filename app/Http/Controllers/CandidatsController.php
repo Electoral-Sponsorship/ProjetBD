@@ -7,7 +7,6 @@ use App\Models\Electeur;
 use Illuminate\Http\Request;
 use App\Models\GestionParrainage;
 use App\Notifications\CandidatMail;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Contracts\Service\Attribute\Required;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -101,27 +100,11 @@ class CandidatsController extends Controller
                     'message' => 'Cet email est déjà utilisé par un autre candidat.',
                 ],400);
             }
-            $photopath = null;
+            //$photopath = null;
             // if($request->hasFile('photo')) {
             //     $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
             //     $photopath = $cloudinaryImage->getSecurePath(); 
             // }
-            Log::info('Début de l\'upload Cloudinary', ['email' => $request->email]);
-
-try {
-    if ($request->hasFile('photo')) {
-        $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
-        $photopath = $cloudinaryImage->getSecurePath();
-    }
-} catch (\Exception $e) {
-    Log::error('Erreur Cloudinary: ' . $e->getMessage());
-    return response()->json([
-        'message' => 'Erreur lors de l\'upload de l\'image sur Cloudinary.',
-        'error' => $e->getMessage()
-    ], 500);
-}
-
-Log::info('Upload Cloudinary réussi', ['photo_url' =>$photopath]);
             $candidat = Candidat::create([
                 'numElecteur' => $request->numeroElecteur,
                 'numTel' => $request->telephone,
@@ -130,7 +113,7 @@ Log::info('Upload Cloudinary réussi', ['photo_url' =>$photopath]);
                 'slogan' => $request->slogan,
                 'couleurs' =>  $request->couleurs,
                 'urlPageInfo' => $request->urlInfo,
-                'photo' => $photopath
+                'photo' => $request->photo
             ]);
             $codeAuth = $this->generateCode();
             Cache::put('code_verification_' . $request->numeroElecteur, $codeAuth, now()->addMinutes(50));
