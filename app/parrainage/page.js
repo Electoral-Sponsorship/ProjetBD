@@ -2,12 +2,10 @@
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
-
 const Parrainage = () => {
   const [numElecteur, setNumElecteur] = useState("");
   const [numCIN, setNumCIN] = useState("");
   const [authCode, setAuthCode] = useState("");
-  const [error, setError] = useState("");
   const [step, setStep] = useState(1);
   const [citizenInfo, setCitizenInfo] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -18,7 +16,11 @@ const Parrainage = () => {
   // Fonction pour valider les informations de l'électeur
   const validateElectorInfo = async () => {
     if (!numElecteur || !numCIN) {
-      setError("Veuillez remplir tous les champs.");
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -38,10 +40,18 @@ const Parrainage = () => {
         setCitizenInfo(data);
         setStep(2);
       } else {
-        setError(data.description || "Les informations fournies sont incorrectes.");
+        toast({
+          title: "Erreur",
+          description: data.description || "Les informations fournies sont incorrectes.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setError("Erreur de connexion. Veuillez réessayer.");
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +60,11 @@ const Parrainage = () => {
   // Fonction pour valider le code d'authentification
   const validateAuthCode = async () => {
     if (!authCode) {
-      setError("Veuillez entrer le code d'authentification.");
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer le code d'authentification.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -70,10 +84,18 @@ const Parrainage = () => {
         setCitizenInfo(data);
         setStep(3);
       } else {
-        setError(data.description || "Le code d'authentification est invalide.");
+        toast({
+          title: "Erreur",
+          description: data.description || "Le code d'authentification est invalide.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setError("Erreur de connexion. Veuillez réessayer.");
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +104,11 @@ const Parrainage = () => {
   // Fonction pour envoyer le code de validation
   const sendValidationCode = async () => {
     if (!selectedCandidate) {
-      setError("Veuillez sélectionner un candidat.");
+      toast({
+        title: "Erreur",
+        description: "Veuillez sélectionner un candidat.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -99,11 +125,24 @@ const Parrainage = () => {
 
       if (response.ok) {
         setValidationCodeSent(true);
+        toast({
+          title: "Succès",
+          description: "Code de validation envoyé avec succès.",
+          variant: "success",
+        });
       } else {
-        setError(data.description || "Erreur lors de l'envoi du code de validation.");
+        toast({
+          title: "Erreur",
+          description: data.description || "Erreur lors de l'envoi du code de validation.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setError("Erreur de connexion. Veuillez réessayer.");
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -112,12 +151,20 @@ const Parrainage = () => {
   // Fonction pour valider le parrainage
   const validateParrainage = async () => {
     if (!confirmationCode) {
-      setError("Veuillez entrer le code de validation.");
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer le code de validation.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!selectedCandidate) {
-      setError("Veuillez sélectionner un candidat.");
+      toast({
+        title: "Erreur",
+        description: "Veuillez sélectionner un candidat.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -133,27 +180,38 @@ const Parrainage = () => {
           codeValidation: confirmationCode,
         }),
       });
-      console.log("show response",response);
+      console.log("show response", response);
       const data = await response.json();
       console.log("Réponse du backend :", data);
 
       if (response.ok) {
-        alert("Parrainage effectué avec succès !");
+        toast({
+          title: "Succès",
+          description: "Parrainage effectué avec succès !",
+          variant: "success",
+        });
         // Réinitialiser le formulaire
         setNumElecteur("");
         setNumCIN("");
         setAuthCode("");
-        setError("");
         setStep(1);
         setCitizenInfo(null);
         setSelectedCandidate(null);
         setConfirmationCode("");
         setValidationCodeSent(false);
       } else {
-        setError(data.description || "Erreur lors de la validation du parrainage.");
+        toast({
+          title: "Erreur",
+          description: data.description || "Erreur lors de la validation du parrainage.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setError("Erreur de connexion. Veuillez réessayer.");
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -259,9 +317,6 @@ const Parrainage = () => {
             </button>
           </div>
         )}
-
-        {/* Affichage des erreurs */}
-        {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
     </div>
   );
