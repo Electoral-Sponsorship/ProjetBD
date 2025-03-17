@@ -49,7 +49,7 @@ function ListElector() {
     formData.append("electoral_file", selectedFile);
     formData.append("checksum", checksum);
     formData.append("idAdmin", "1");
-`${NEXT_PUBLIC_BACKEND_URL}/api/parrainage/dashboard-statistics`
+
     try {
       // Step 1: Check the electoral file
         const checkResponse = await fetch("https://projetbd-production-8efe.up.railway.app/api/check-electoral-file", {
@@ -67,7 +67,7 @@ function ListElector() {
       //`${NEXT_PUBLIC_BACKEND_URL}/api/
       // Step 2: If the file is valid, proceed to validate and transfer data
       if (checkResult.status === "success") {
-        const validateResponse = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/api/validate-import`, {
+        const validateResponse = await fetch(`https://projetbd-production-8efe.up.railway.app/api/validate-import`, {
           method: "POST",
         });
 
@@ -131,7 +131,7 @@ function ListElector() {
                 placeholder="Saisir l'empreinte CHECKSUM"
                 value={checksum}
                 onChange={handleChecksumChange}
-                className="border rounded p-2 mb-3 w-full"
+                className="border rounded text-black p-2 mb-3 w-full"
               />
 
               {/* Affichage du fichier sélectionné */}
