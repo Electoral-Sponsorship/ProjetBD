@@ -28,7 +28,7 @@ export default function CandidatForm() {
     setIsVerifying(true); // Activer le chargement spécifique à la vérification
 
     try {
-      const response = await fetch(`http://localhost:8000/api/verify/${numeroElecteur}`);
+      const response = await fetch(`https://projetbd-production-8efe.up.railway.app/api/verify/${numeroElecteur}`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -87,7 +87,7 @@ export default function CandidatForm() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/register", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/register", {
         method: "POST",
         body: formDataToSend,
         headers: {
