@@ -95,7 +95,7 @@ export default function CandidatForm() {
         },
       });
       const data = await response.json();
-
+      console.log("Informations :",data);
       if (response.ok) {
         toast({
           title: "Informations enregistrées",
