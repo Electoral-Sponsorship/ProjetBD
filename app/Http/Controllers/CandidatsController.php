@@ -7,6 +7,7 @@ use App\Models\Electeur;
 use Illuminate\Http\Request;
 use App\Models\GestionParrainage;
 use App\Notifications\CandidatMail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Contracts\Service\Attribute\Required;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -100,11 +101,25 @@ class CandidatsController extends Controller
                     'message' => 'Cet email est déjà utilisé par un autre candidat.',
                 ],400);
             }
-            $photopath = null;
-            if($request->hasFile('photo')) {
-                $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
-                $photopath = $cloudinaryImage->getSecurePath(); 
+            // $photopath = null;
+            // if($request->hasFile('photo')) {
+            //     $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
+            //     $photopath = $cloudinaryImage->getSecurePath(); 
+            // }
+            try {
+                if ($request->hasFile('photo')) {
+                    $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
+                    $photopath = $cloudinaryImage->getSecurePath();
+                }
+            } catch (\Exception $e) {
+                // Log l'erreur pour le débogage
+                Log::error('Cloudinary Error: ' . $e->getMessage());
+                return response()->json([
+                    'message' => 'Erreur lors de l\'upload de l\'image sur Cloudinary.',
+                    'error' => $e->getMessage()
+                ], 500);
             }
+            
             $candidat = Candidat::create([
                 'numElecteur' => $request->numeroElecteur,
                 'numTel' => $request->telephone,
