@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'https://sunuparrainage.vercel.app/')],
+    'allowed_origins' => ['https://sunuparrainage.vercel.app/'],
 
     'allowed_origins_patterns' => [],
 
