@@ -1,4 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+// next.config.mjs
+const nextConfig = {
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "upload.wikimedia.org", 
+          port: "",
+          pathname: "/wikipedia/commons/**", 
+        },
+      ],
+    },
+  };
+  
+  export default nextConfig;

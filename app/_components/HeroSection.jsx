@@ -1,48 +1,45 @@
-import React from 'react'
-import RightButton from '../elements/RightButton'
-import Link from 'next/link'
+import Image from "next/image";
+import { FaUserPlus, FaList, FaArrowRight } from "react-icons/fa";
 
 function HeroSection() {
   return (
-    <div>
-      <section>
-  <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:items-center md:gap-8">
-      <div className="md:col-span-3">
-        <img
-        src="image1.jpg"
-          className="rounded"
-          alt=""
-          width={700}
-          height={700}
-        />
+    <section className="h-screen relative bg-gradient-to-r from-green-600 to-blue-500 text-white py-20 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+				<Image
+				src="https://upload.wikimedia.org/wikipedia/commons/9/90/Palais_pr%C3%A9sidentiel_%C3%A0_Dakar.JPG"
+				alt="Background"
+				fill
+				style={{ objectFit: "cover" }}
+				className="opacity-50"
+			/>
       </div>
 
-      <div className="md:col-span-1">
-        <div className="max-w-lg md:max-w-none">
-          <h2 className="text-2xl font-semibold text-gray-900 sm:text-3xl">
-        Bienvenue dans votre espace d'importation du fichier Electoral
-          </h2>
+      <div className="container mx-auto relative z-10 text-center px-4 flex flex-col justify-center h-full">
+        <h1 className="text-5xl font-bold mb-6 drop-shadow-md animate-fade-in-up">
+          Gestion des Parrainages pour les Élections Présidentielles
+        </h1>
+        <p className="text-xl mb-8 drop-shadow-sm animate-fade-in-up">
+          Une plateforme numérique pour simplifier et sécuriser le processus de parrainage.
+        </p>
 
-          <p className="mt-4 text-gray-700">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur doloremque saepe
-            architecto maiores repudiandae amet perferendis repellendus, reprehenderit voluptas
-            sequi.
-          </p>
-          
-          <Link href="/ListElector">
-          <RightButton />
-          </Link>
+        <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up">
+          <a
+            href="/parrain"
+            className="flex items-center justify-center bg-white text-green-700 font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105"
+          >
+            <FaUserPlus className="mr-2 text-xl" /> Enregistrer votre profil parrain
+          </a>
 
-         
-         
+          <a
+            href="/ListeCandidat"
+            className="flex items-center justify-center bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-white hover:text-green-700 transition duration-300 transform hover:scale-105"
+          >
+            <FaList className="mr-2 text-xl" /> Voir la liste des candidats
+          </a>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-    </div>
-  )
+    </section>
+  );
 }
 
-export default HeroSection
+export default HeroSection;
