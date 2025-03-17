@@ -49,10 +49,10 @@ function ListElector() {
     formData.append("electoral_file", selectedFile);
     formData.append("checksum", checksum);
     formData.append("idAdmin", "1");
-
+`${NEXT_PUBLIC_BACKEND_URL}/api/parrainage/dashboard-statistics`
     try {
       // Step 1: Check the electoral file
-        const checkResponse = await fetch(`http://localhost:8000/api/check-electoral-file`, {
+        const checkResponse = await fetch("https://projetbd-production-8efe.up.railway.app/api/check-electoral-file", {
         method: "POST",
         body: formData,
       });
@@ -64,10 +64,10 @@ function ListElector() {
         setIsLoading(false); // Désactiver le loader
         return;
       }
-
+      //`${NEXT_PUBLIC_BACKEND_URL}/api/
       // Step 2: If the file is valid, proceed to validate and transfer data
       if (checkResult.status === "success") {
-        const validateResponse = await fetch(`http://localhost:8000/api/validate-import`, {
+        const validateResponse = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/api/validate-import`, {
           method: "POST",
         });
 

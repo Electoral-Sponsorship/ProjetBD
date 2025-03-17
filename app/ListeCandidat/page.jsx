@@ -10,7 +10,7 @@ export default function ListeCandidats() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/candidats")
+    fetch("https://projetbd-production-8efe.up.railway.app/api/candidats")
       .then((res) => res.json())
       .then((data) => setCandidats(data))
       .catch(() => 
@@ -40,7 +40,7 @@ export default function ListeCandidats() {
     
     try {
       const response = await fetch(
-        `http://localhost:8000/api/resendCode/${selectedCandidat.numElecteur}`,
+        `https://projetbd-production-8efe.up.railway.app/api/resendCode/${selectedCandidat.numElecteur}`,
         {
           method: "POST",
           headers: {

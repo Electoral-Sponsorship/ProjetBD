@@ -17,7 +17,7 @@ const SuiviParrainage = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/verifyCode", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/verifyCode", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const SuiviParrainage = () => {
 
   const fetchParrainages = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/track-progress", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/track-progress", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

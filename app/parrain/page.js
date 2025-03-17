@@ -26,7 +26,7 @@ const ParrainProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/parrains/validate-electeur", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrains/validate-electeur", {
         method: "POST",
         body: JSON.stringify({ electorNumber, identityNumber, lastName, votingOffice }),
         headers: { "Content-Type": "application/json" },
@@ -51,7 +51,7 @@ const ParrainProfile = () => {
     }
     console.log("Elector Number utilisé pour l'enregistrement:", electorNumber); 
     try {
-      const response = await fetch("http://localhost:8000/api/parrains/register", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrains/register", {
         method: "POST",
         body: JSON.stringify({ electorNumber, phone, email}),
         headers: { "Content-Type": "application/json" },

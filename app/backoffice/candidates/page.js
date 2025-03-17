@@ -23,7 +23,7 @@ const CandidateRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/candidates", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/candidates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

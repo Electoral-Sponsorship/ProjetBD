@@ -12,7 +12,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Récupérer les statistiques depuis l'API
-    fetch("http://localhost:8000/api/parrainage/dashboard-statistics")
+    fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/dashboard-statistics")   //`${API_BASE_URL}/api/parrainage/track-progress`  
       .then((response) => response.json())
       .then((data) => setStats(data))
       .catch((error) => console.error("Erreur lors de la récupération des statistiques :", error));

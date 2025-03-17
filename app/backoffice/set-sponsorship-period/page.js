@@ -13,9 +13,9 @@ export default function SetSponsorshipPeriod() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+   //`${NEXT_PUBLIC_BACKEND_URL}
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/set-sponsorship-period", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/set-sponsorship-period", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

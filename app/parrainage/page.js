@@ -25,7 +25,7 @@ const Parrainage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/verify-identifiers", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/verify-identifiers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ numElecteur, numCIN }),
@@ -57,7 +57,7 @@ const Parrainage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/verify-auth-code", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/verify-auth-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ numElecteur, codeAuth: authCode }),
@@ -89,7 +89,7 @@ const Parrainage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/send-validation-code", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/send-validation-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ numElecteur }),
@@ -124,7 +124,7 @@ const Parrainage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/parrainage/send-verification-code", {
+      const response = await fetch("https://projetbd-production-8efe.up.railway.app/api/parrainage/send-verification-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

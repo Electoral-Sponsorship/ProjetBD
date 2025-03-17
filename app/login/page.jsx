@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
 
     const response = await fetch(
-      `http://localhost:8000/api/admin/login`,
+      `https://projetbd-production-8efe.up.railway.app/api/admin/login`,
       {
         method: "POST",
         headers: {
