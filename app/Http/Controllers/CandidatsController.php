@@ -101,25 +101,27 @@ class CandidatsController extends Controller
                     'message' => 'Cet email est déjà utilisé par un autre candidat.',
                 ],400);
             }
-            // $photopath = null;
+            $photopath = null;
             // if($request->hasFile('photo')) {
             //     $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
             //     $photopath = $cloudinaryImage->getSecurePath(); 
             // }
-            try {
-                if ($request->hasFile('photo')) {
-                    $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
-                    $photopath = $cloudinaryImage->getSecurePath();
-                }
-            } catch (\Exception $e) {
-                // Log l'erreur pour le débogage
-                Log::error('Cloudinary Error: ' . $e->getMessage());
-                return response()->json([
-                    'message' => 'Erreur lors de l\'upload de l\'image sur Cloudinary.',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-            
+            Log::info('Début de l\'upload Cloudinary', ['email' => $request->email]);
+
+try {
+    if ($request->hasFile('photo')) {
+        $cloudinaryImage = $request->file('photo')->storeOnCloudinary('candidats_photos');
+        $photopath = $cloudinaryImage->getSecurePath();
+    }
+} catch (\Exception $e) {
+    Log::error('Erreur Cloudinary: ' . $e->getMessage());
+    return response()->json([
+        'message' => 'Erreur lors de l\'upload de l\'image sur Cloudinary.',
+        'error' => $e->getMessage()
+    ], 500);
+}
+
+Log::info('Upload Cloudinary réussi', ['photo_url' =>$photopath]);
             $candidat = Candidat::create([
                 'numElecteur' => $request->numeroElecteur,
                 'numTel' => $request->telephone,
