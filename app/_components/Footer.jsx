@@ -25,7 +25,7 @@ function Footer() {
               </li>
               <li>
                 <a
-                  href="/candidats"
+                  href="/ListeCandidat"
                   className="flex items-center text-gray-400 hover:text-green-500 transition duration-300"
                 >
                   <span className="mr-2">+</span> Voir la liste des candidats
